@@ -1,0 +1,58 @@
+{% extends 'myprofile/base.html' %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-5">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <label><i class="fa fa-tachometer fa-2x"></i>个人信息编辑</label>
+                </div>
+                <div class="panel-body">
+                      <form id="userform" class="form-search" method="POST"  enctype="multipart/form-data" name="form">
+                          {% csrf_token %}
+                          <table>
+                             <tbody>
+                                <tr>
+                                    <th><label for="id_username">登录名:</label></th>
+                                    <td>{{ form.username }}</td>
+                                    <td class="username errorInfo"></td>
+                                </tr>
+                                <tr>
+                                    <th><label for="id_first_name">姓名:</label></th>
+                                    <td>{{ form.first_name }}</td>
+                                    <td class="first_name errorInfo"></td>
+                                </tr>
+                                <tr>
+                                    <th><label for="id_password">密码:</label></th>
+                                    <td>{{ form.password }}</td>
+                                    <td class="password errorInfo">{{ form.password.errors }}</td>
+                                </tr>
+                                <tr>
+                                    <th><label for="id_email">邮箱:</label></th>
+                                    <td>{{ form.email }}</td>
+                                    <td class="email errorInfo">{{ form.email.errors }}</td>
+                                </tr>
+                                <tr>
+                                    <th><label for="id_last_name">手机:</label></th>
+                                    <td>{{ form.last_name }}</td>
+                                    <td class="errorInfor last_name" style="color: #ff0000">{{ form.last_name.errors }}</td>
+                                </tr>
+                             </tbody>
+                          </table><br>
+                          <input type="submit" class="btn btn-warning" value="保存">
+                          <span class="errorInfo" style="color:red;margin-right:150px;"></span>
+                      </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-7">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <label><i class="fa fa-tachometer fa-2x"></i>我的统计</label>
+                </div>
+                <div class="panel-body">
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/static/bootstrap/js/profile/profile.js"></script>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'public/base.html' %}
+{% block header %}
+    <header class="container navbar-fixed-top" role="banner">
+        <a href="/" class="navbar-brand"><img src="/static/bootstrap/img/logo_test.png" ></a>
+        <ul class="nav navbar-nav">
+              <li><a href="{% url "networkindex" %}">网络运维中心</a></li>
+              <li class="idclist"><a href="{% url "idcindex" %}">机房</a></li>
+              <li class="device"><a href="{% url "deviceindex" %}">设备</a></li>
+              <li class="cobbler"><a href="{% url "srvpool" %}">装机</a></li>
+              <li class="network"><a href="#">网络</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                <a href="{% url "profile" %}" class="btn btn-xs">欢迎～
+                    <span class="glyphicon glyphicon-user"></span> {{ user.first_name }}
+                </a>
+            </li>
+            <li>
+                <a href="{%url "logout"%}" class="btn btn-xs">
+                    <span class="glyphicon glyphicon-off"></span> 退出
+                </a>
+            </li>
+        </ul>
+    </header>
+{% endblock %}
+{% block page %}
+        <div class="row">
+        <div class="col-md-2" >
+            {% block widget %} {% endblock %}
+        </div>
+        <div class="col-md-10">
+            {% block content %} {% endblock %}
+        </div>
+    </div>
+{% endblock %}
+{% block footer %}
+    {% include "public/footer.html" %}
+{% endblock %}

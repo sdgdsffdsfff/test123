@@ -1,0 +1,206 @@
+{% extends 'myprofile/base.html' %}
+{% block content %}
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <label><i class="fa fa-tachometer fa-2x"></i>个人中心</label>
+            </div>
+            <div class="panel-body">
+                <div class="col-md-7">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                          <h3 class="panel-title">我的任务</h3>
+                        </div>
+                        <div class="panel-body">
+                            <table class="table table-hover table-bordered" style="padding: 1px;font-size: 10px">
+                                <thead>
+                                    <tr>
+                                        <th>任务名</th>
+                                        <th>任务类型</th>
+                                        <th>申请人</th>
+                                        <th>时间</th>
+                                        <th>状态</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>xx主机下线</td>
+                                        <td>下线</td>
+                                        <td>张鹏</td>
+                                        <td>2013-11-29</td>
+                                        <td>
+                                            <img src="/static/admin/img/icon-no.gif" alt="True">
+                                            未审核
+                                        </td>
+                                        <td><a href="#">审核</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                          <h3 class="panel-title">我的消息</h3>
+                        </div>
+                        <div class="panel-body">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h3 class="panel-title">系统消息</h3>
+                </div>
+                <div class="panel-body">
+                    <div>
+                        员工编号：<input id="user" value=""/>
+                        开始时间：<input id="st" value="2014-06-01"/>
+                        结束时间：<input id="et" value="2014-06-30"/>
+                        <input id="submit" type="button" value="查询"/>
+                    </div>
+                    <div id="msgDIV"></div>
+                    <script>
+                        $('#submit').click(function(){
+                            $.getJSON("{% url "oaquery" %}", {
+                                no: $('#user').val(),
+                                st: $('#st').val(),
+                                et: $('#et').val()
+                            },
+                            function(data) {
+                                var msg = '<table class="table table-bordered table-striped">';
+                                var tempRes = new Array();
+                                tempRes = data[0].result.split("&");
+                                if (tempRes != null) {
+                                    if (tempRes[0] == 100) {
+                                        msg += "<tr><td align='center' width='300' colspan='2'>未找到相关记录，错误码：100</td></tr>";
+                                        msg += "</table>";
+                                    } else if (tempRes[0] == 101) {
+                                        msg += "<tr><td align='center' width='300' colspan='2'>数据处理异常，错误码：" + tempRes[1] + "</td></tr>";
+                                        msg += "</table>";
+                                    } else if (tempRes[0] == 200) {
+                                        var jsonStr = eval("(" + tempRes[1] + ")");
+                                        var jLength = jsonStr.K3.length;
+                                        msg += "<tr>";
+                                        msg += "<td align='center' width='100'>日期</td>";
+                                        msg += "<td align='center' width='80'>星期</td>";
+                                        msg += "<td align='center' width='120'>上班卡</td>";
+                                        msg += "<td align='center' width='120'>下班卡</td>";
+                                        msg += "<td align='center' width='120'>考勤情况</td>";
+                                        msg += "</tr>";
+                                        var isd = false;
+                                        for (var i = 1; i < jLength;i=i+2) {
+                                            var begin = jsonStr.K3[i-1].FCardDateTime.replace('T',' ');
+                                            var end = jsonStr.K3[i].FCardDateTime.replace('T',' ');
+                                            msg += "<tr>";
+                                            msg += "<td align='center' width='100'>" + begin.substring(0,10) + "</td>";
+                                            msg += "<td align='center' width='80'>" + showDate(begin) + "</td>";
+                                            if(begin.substring(0,10) == end.substring(0,10)){
+                                                msg += "<td align='center' width='120'>" + begin.substring(11,19) + "</td>";
+                                                msg += "<td align='center' width='120'>" + end.substring(11,19) + "</td>";
+                                            } else {
+                                                if(pInt(begin.substring(11,13)) < 13){
+                                                    msg += "<td align='center' width='120'>" + begin.substring(11,19) + "</td><td align='center' width='120'>缺卡</td>";
+                                                    end='';
+                                                } else {
+                                                    msg += "<td align='center' width='120'>缺卡</td><td align='center' width='120'>" + begin.substring(11,19) + "</td>";
+                                                    end = begin;
+                                                    begin = '';
+                                                }
+                                                i--;
+                                            }
+                                            msg += addMsg(begin,end);
+                                            msg += "</tr>";
+                                        }
+                                        msg += "</table>";
+                                    } else {
+                                        msg += "<tr><td align='center' width='300' colspan='2'>未找到相关记录，错误码：000</td></tr>";
+                                        msg += "</table>";
+                                    }
+                                } else {
+                                    msg += "<tr><td align='center' width='300' colspan='2'>未找到相关记录，错误码：000</td></tr>";
+                                    msg += "</table>";
+                                }
+                                $('#msgDIV').html(msg);
+                            });
+                        });
+                        function addMsg(b,e){
+                            var msg = '';
+                            var isRed = '';
+                            var b_h = 0;
+                            var b_m = 0;
+                            var e_h = 0;
+                            if(b){
+                                b_h = pInt(b.substring(11,13));
+                                b_m = pInt(b.substring(14,16));
+                            }
+                            if(e) e_h = pInt(e.substring(11,13));
+                            if(b_h >= 9){
+                                if(b_h > 9 || b_m > 0)  msg += "迟到";
+                                if(b_h == 9 && b_m > 0 && b_m <= 30) msg += "(<b>半小时内</b>)"
+                            }
+                            if(e_h > 0 && e_h < 18)
+                                msg += " 早退 ";
+                            if(msg) {
+                                isRed = 'style="color:#cc0000"';
+                            } else {
+                                msg = '正常';
+                            }
+                            msg = "<td align='center' width='180' "+isRed+">"+msg+"</td>";
+                            return msg;
+                        }
+                        function pInt(o){
+                            var a = parseInt(o);
+                            if(!a) a = 0;
+                            return a;
+                        }
+                        $(function(){
+                            var myDate = new Date();
+                            var month = pInt(myDate.getMonth() + 1);
+                            var year = myDate.getFullYear();
+                            if(month < 10) month = "0" + month;
+                            var s = myDate.getFullYear() + "-" + month;
+                            $('#st').val(s+"-01");
+                            $('#et').val(s+"-"+getLastDate(year,month));
+                        })
+
+                        function showDate(str){
+                            var r_str = str.replace(/-/g,"/");
+                            var date = new Date(r_str);
+                            var a = new Array("日", "一", "二", "三", "四", "五", "六");
+                            var week = date.getDay();
+                            return "星期"+ a[week];
+                        }
+                        function getLastDate(year,month) {
+                            //run nian
+                            var isrun = false;
+                            if ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0) isrun = true;
+                            switch (month) {
+                            case 2:
+                                if (isrun) {
+                                    return 29;
+                                } else {
+                                    return 28;
+                                }
+                            case 1:
+                            case 3:
+                            case 5:
+                            case 7:
+                            case 8:
+                            case 10:
+                            case 12:
+                                return 31;
+                            default:
+                                return 30;
+                            }
+                        }
+                       </script>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>乐蜂网.Ops Team</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- Bootstrap -->
+        <link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
+        <link href="/static/bootstrap/css/font-awesome.css" rel="stylesheet" media="screen">
+        <link href="/static/bootstrap/css/alertify.core.css" rel="stylesheet" media="screen">
+        <link href="/static/bootstrap/css/alertify.default.css" rel="stylesheet" media="screen">
+        <link href="/static/bootstrap/css/alertify.bootstrap.css" rel="stylesheet" media="screen">
+        <link href="/static/bootstrap/css/jquery-ui.css" rel="stylesheet" media="screen">
+        <link href="/static/bootstrap/css/jquery-ui-timepicker-addon.css" rel="stylesheet" media="screen">
+        <link href="/static/bootstrap/css/jquery-jvectormap-1.2.2.css" rel="stylesheet" media="screen">
+        <link href="/static/bootstrap/css/datatables.css" rel="stylesheet" media="screen">
+        <link href="/static/bootstrap/css/tree.css" rel="stylesheet" media="screen">
+        <link href="/static/bootstrap/css/base.css" rel="stylesheet" media="screen">
+        <script src="/static/bootstrap/js/jquery.js"></script>
+        <script src="/static/bootstrap/js/jquery-migrate-1.2.1.js"></script>
+        <script>
+            $(function(){
+                var home = '.'+'{{index}}';
+                if (home != '.'){
+                   $(home).addClass('active');
+                }
+            })
+        </script>
+    </head>
+    <body>
+        <div class="header">
+            {% block header %} {% endblock %}
+        </div>
+        <div class="main">
+            <div class="container">
+                {% block page %} {% endblock %}
+            </div>
+        </div>
+        <div class="footer">
+            {% block footer %} {% endblock %}
+        </div>
+    </body>
+</html>

@@ -1,0 +1,349 @@
+{% extends 'networkcenter/base.html' %}
+{{% block widget %}
+    <div class="panel panel-default" style="margin-bottom: 10px;">
+          <div class="panel-heading">
+              <i class="fa fa-globe"></i>
+              <label> 设备分类</label>
+          </div>
+          <div class="panel-body">
+              <ul class="nav nav-pills nav-stacked">
+                  {% for idc in device_type %}
+                    <li><a href="{% url "devicelist" %}?node={{ idc.level.level }}.{{ idc.tag }}"><i class="fa fa-cogs"></i> {{ idc.remask }}</a></li>
+                  {% endfor %}
+                  <li><a href="{% url "devicelist" %}"><i class="fa fa-asterisk"></i> 所有设备</a></li>
+                  {% if perms.networkcenter.add_idc %}
+                      <li><a data-toggle="modal" data-target="#adddevice"><i class="fa fa-plus-square-o"></i> 添加设备</a></li>
+                  {% endif %}
+              </ul>
+          </div>
+    </div>
+    <div class="panel panel-default" style="margin-bottom: 10px;">
+          <div class="panel-heading">
+              <i class="fa fa-globe"></i>
+              <label> 设备树</label>
+          </div>
+          <div class="panel-body">
+              <ul class="easyui-tree" id="tt" data-options="
+                    url:'{% url "devicetree" %}',
+                    method:'get',
+                    animate:true,
+                    lines:true,
+                    formatter:function(node){
+                        var s = node.text;
+                        if (node.children){
+                            s = ''+s+'<\/a><span style=\'color:blue\'></span>';
+                        }
+                        return s;
+                    }
+                ">
+              </ul>
+          </div>
+    </div>
+    <div id="adddevice" class="modal" style="display:none">
+        <form id="adddevice" method="POST"  enctype="multipart/form-data" role="form" action="{% url "devicelist" %}"> {% csrf_token %}
+            <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" >&times;</button>
+                    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-save"></i> 添加设备</h4>
+                  </div>
+                  <div class="modal-body">
+                    <table class="table-responsive">
+                        <tbody>
+                            <tr><th><label for="id_device_sn">序列号:</label></th>
+                                <td>{{ form.sn }}</td>
+                                <td class="errorInfo device_sn fa fa-star"></td>
+                            </tr>
+                            <tr><th><label for="id_idc">机 房:</label></th>
+                                <td>{{ form.idc }}</td>
+                                <td class="idc"></td>
+                            </tr>
+                            <tr><th><label for="id_rack">机 柜:</label></th>
+                                <td>{{ form.rack }}</td>
+                                <td class="rack"></td>
+                            </tr>
+                            <tr><th><label for="id_position">U 位:</label></th>
+                                <td>{{ form.position }}</td>
+                                <td class="position"></td>
+                            </tr>
+                            <tr><th><label for="id_asset_id">资产编号:</label></th>
+                                <td>{{ form.asset_id }}</td>
+                                <td class="asset_id"></td>
+                            </tr>
+                            <tr><th><label for="id_purchase_id">采购单号:</label></th>
+                                <td>{{ form.purchase_id }}</td>
+                                <td class="purchase_id"></td>
+                            </tr>
+                            <tr><th><label for="id_buy_price">购买单价:</label></th>
+                                <td>{{ form.buy_price }}</td>
+                                <td class="buy_price"></td>
+                            </tr>
+                            <tr><th><label for="id_buy_time">购买时间:</label></th>
+                                <td>{{ form.buy_time }}</td>
+                                <td class="buy_time"></td>
+                            </tr>
+                            <tr><th><label for="id_expired_time">过保时间:</label></th>
+                                <td>{{ form.expired_time }}</td>
+                                <td class="expired_time"></td>
+                            </tr>
+                            <tr><th><label for="id_remark">备注:</label></th>
+                                <td>{{ form.remark }}</td>
+                                <td class="remark"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="form-group" style="margin-top: 10px">
+                        <label class="control-label col-md-2">选择标签:</label><span class="tag errorInfo"></span><br>
+                        {{ form.tag }}
+                        {% for checkbox in form.tag %}
+                            <label class="radio-inline">
+                                {{ checkbox.tag }}
+                                <span>{{ checkbox.choice_label }}</span>
+                            </label>
+                        {% endfor %}
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                      <span class="all errorInfo" style="margin-right:300px"></span>
+                      <input type="submit" class="btn btn-primary-outline" value="添加" style="margin-left:400px">
+                      <button type="button" class="btn btn-primary-outline" data-dismiss="modal">Close</button>
+                  </div>
+                </div><!-- /.modal-content -->
+             </div><!-- /.modal-dialog -->
+        </form>
+    </div>
+    <script type="text/javascript">
+        $(function () {
+            function getNodeUrl(th,node, url){
+                var u = '';
+                var a = $(th).tree('getParent',node.target);
+                if (a){
+                    u = '_'+node.id;
+                    url = u+url;
+                    return getNodeUrl(th, a, url);
+                }else{
+                    url = node.id+url;
+                    return url;
+                }
+            }
+            var datatables=$('#xx').dataTable({
+                "sPaginationType": "full_numbers"
+            });
+            $('#tt').tree({
+                onClick: function(node){
+                    var url = '';
+                    var urllist = getNodeUrl(this, node, url);
+                    $.get("{% url "devicetreelist" %}?node="+urllist,function(data){
+                        data = JSON.parse(data);
+                        datatables.fnClearTable();
+                        $.each(data,function(index,d){
+                            if (d[4]){
+                                var status = "<span class=\"label label-danger\">已分配</span>";
+                            }else{
+                                status = "<span class=\"label label-danger\">未分配</span>";
+                            }
+                            var devaction = '<a href="/network/devicelist.html/'+d[5]+'" onclick="return showAddAnotherPopup(this);" data-toggle="tooltip" title="设备详情"><i class="fa fa-eye"></i></a>' +
+                                    '<a href="/network/deviceedit.html/'+d[5]+'" onclick="return showAddAnotherPopup(this);" data-toggle="tooltip" title="设备编辑"><i class="fa fa-edit"></i></a>' +
+                                    '<a href="/network/deviceint.html/'+d[5]+'" onclick="return showAddAnotherPopup(this);" data-toggle="tooltip" title="设备接口"><i class="fa fa-sitemap"></i></a>';
+                            datatables.fnAddData([ d[0],d[1],d[2],d[3],status,devaction] );
+                        });
+                    });
+                }
+            });
+            var options = {
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.code == 1){
+                    $('#adddevice').fadeOut();
+                    alertify.alert("添加成功");
+                    $('#alertify-ok').live("click",function(){
+                        window.location=window.location.href;
+                    });
+                }else if (data.code == 0){
+                    $(".device_sn").text(data.message['sn']);
+                    $(".idc").text(data.message['idc']);
+                    $(".rack").text(data.message['rack']);
+                    $(".position").text(data.message['position']);
+                    $(".asset_id").text(data.message['asset_id']);
+                    $(".purchase_id").text(data.message['purchase_id']);
+                    $(".buy_price").text(data.message['buy_price']);
+                    $(".buy_time").text(data.message['buy_time']);
+                    $(".buy_price").text(data.message['buy_price']);
+                    $(".expired_time").text(data.message['expired_time']);
+                    $(".remark").text(data.message['remark']);
+                    $(".auth").text(data.message['auth']);
+                    $(".tag").text(data.message['tag']);
+                }
+            }
+        };
+        // ajaxForm
+        $("#adddevice").ajaxForm(options);
+        });
+    </script>
+    <script src="/static/bootstrap/js/assets/device.js"></script>
+{% endblock %}
+{% block content %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title" style="display: inline-block"><i class="fa fa-laptop"></i> {{ tag | default:'所有设备'}}</h3>
+            <div class="btn-group pull-right">
+                {% if perms.networkcenter.add_device %}
+                    <a class="btn btn-primary-outline" data-toggle="modal" data-target="#importdevice">设备导入</a>
+                {% endif %}
+                {% if perms.networkcenter.add_device %}
+                    <a id="export" class="btn btn-primary-outline" data-toggle="modal" data-target="#exportdevice">设备导出</a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="panel-body" style="padding: 5px">
+            <table class="table table-hover table-bordered" id="xx">
+                <thead>
+                <tr>
+                    <th>序列号</th>
+                    <th>机 房</th>
+                    <th>机 柜</th>
+                    <th>U 位</th>
+                    <th>状 态</th>
+                    <th>操 作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for idc in idcs %}
+                    <tr>
+                        <td>{{ idc.sn }}</td>
+                        <td>{{ idc.idc.name }}</td>
+                        <td>{{ idc.rack.name }}</td>
+                        <td>{{ idc.position.name }}</td>
+                        <td>{% if idc.status  %}
+                                <span class="label label-success">已分配</span>
+                            {% else %}
+                                <span class="label label-danger">未分配</span>
+                            {% endif %}
+                        </td>
+                        <td><a href="{% url "devicedetail" idc.id %}"  onclick="return showAddAnotherPopup(this);" data-toggle="tooltip" title="设备详情"><i class="fa fa-eye"></i></a>
+                            <a href="{% url "deviceedit" idc.id %}"  onclick="return showAddAnotherPopup(this);" data-toggle="tooltip" title="设备编辑"><i class="fa fa-edit"></i></a>
+                            <a href="{% url "deviceint" idc.id %}"  onclick="return showAddAnotherPopup(this);" data-toggle="tooltip" title="设备接口"><i class="fa fa-sitemap"></i></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div id="importdevice" class="modal" style="display:none">
+        <form id="importdeviceform" class="form-search" method="POST"  enctype="multipart/form-data" name="form"  action="{% url "importdevice" %}"> {% csrf_token %}
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <a class="close" data-dismiss="modal">×</a>
+                        <h4><i class="fa fa-cloud-upload"></i> 设备导入</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="importdevice" style="display: none">
+                            <span class="importing">设备导入中ing... 请稍后</span>
+                            <div class="progress progress-striped active">
+                                 <div class="progress-bar"  role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 10%"></div>
+                            </div>
+                        </div>
+                        <table class="table-responsive"  style="margin-top: 20px">
+                            <tbody>
+                            <tr>
+                                <th>
+                                    <label for="id_file">上传文件: </label>
+                                </th>
+                                <td>
+                                    <input type="file" name="file" id="id_file" style="padding: 5px">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td><span class="help-block">目前支持Excel格式导入. <a href="/static/bootstrap/img/myhost.xlsx">模板下载</a> </span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <span class="errorInfo excel" style="color:red;margin-right:100px"></span>
+                        <a href="#" class="btn btn-warning" data-dismiss="modal">取消</a>
+                        <input type="submit" class="btn btn-warning" value="导入">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div id="exportdevice" class="modal" style="display:none">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4><i class="fa fa-cloud-download"></i> 设备导出</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="progress progress-striped active">
+                          <div class="progress-bar"  role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 10%">
+                          </div>
+                    </div>
+                    <span class="outing">设备导出中ing... 请稍后</span>
+                    <span class="outend help-block">导出完毕,请点击下载: <a href="/static/bootstrap/img/device.xls">下载</a> </span>
+                </div>
+                <div class="modal-footer">
+                    <span class="errorInfo excel" style="color:red;margin-right:100px"></span>
+                    <a href="#" class="btn btn-warning" data-dismiss="modal">取消</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+       $(function(){
+{#           $('#xx').dataTable({#}
+{#               "sPaginationType": "full_numbers"#}
+{#           });#}
+           $('.id_year_of_purchase').datetimepicker({
+                dateFormat: "yy-mm-dd",
+                alwaysSetTime: false,
+                altFieldTimeOnly: true
+           });
+           var options = {
+               success: function (data) {
+                    data = JSON.parse(data);
+                    if (data.code == 1){
+                        $(".progress-bar").css('width','100%');
+                        $(".importing").text("导入成功");
+                    }else if (data.code == 0){
+                        $(".table-responsive").show();
+                        $(".excel").text(data.message['auth']);
+                    }
+               }
+           };
+           $("#importdeviceform").submit(function(){
+               $(".importdevice").show();
+               $(".table-responsive").hide();
+               $("#importdeviceform").ajaxSubmit(options);
+               $(".excel").text("");
+               return false;
+           });
+           $("#export").click(function(){
+               $(".outend").hide();
+               $.get("{% url "exportdevice" %}",function(data){
+                   data = JSON.parse(data);
+                   if (data.code ==1){
+                       $(".progress-bar").css('width','100%');
+                       $(".outing").hide();
+                       $(".outend").show();
+                   }else if (data.code == 0){
+                        $(".excel").text(data.message['auth']);
+                   }
+               })
+           })
+       });
+       function devtoowt(devid, owtid){
+           $.get("device/"+devid+"/owt/"+owtid,function(data){
+               data = JSON.parse(data);
+               if (data.code ==1){
+                   window.location=window.location.href;
+               }else if (data.code == 0){
+                   alertify.alert(data.message['auth']);
+               }
+           })
+       }
+    </script>
+{% endblock %}

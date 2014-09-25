@@ -1,0 +1,111 @@
+{% extends 'systemcenter/base.html' %}
+{% block page %}
+    <div class="row" style="margin-top: 5px">
+        <div class="col-md-2">
+            <div class="panel-group" id="accordion">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <span class="glyphicon glyphicon-tree-conifer"></span>
+                            <label>服务树</label>
+                        </h4>
+                    </div>
+                    <div class="panel-body">
+                        <ul class="easyui-tree" id="tt" data-options="
+                                url:'{% url "servertree" %}',
+                                method:'get',
+                                animate:true,
+                                lines:true,
+                                formatter:function(node){
+                                    var s = node.text;
+                                    if (node.children){
+                                        s = ''+s+'<\/a><span style=\'color:blue\'></span>';
+                                    }
+                                    return s;
+                                }
+                            ">
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-10">
+            <div class="row">
+                <div class="panel panel-default">
+                    <div class="panel-heading" style="height: 50px">
+                       <h3 class="panel-title" style="display: inline-block"><i class="fa fa-laptop"></i> 主机管理</h3>
+                    </div>
+                    <div class="panel-body" style="padding: 5px">
+                        <div class="panel-body">
+                            <table class="table table-hover table-bordered"  id="xx">
+                                <thead>
+                                    <tr>
+                                        <th>序列号</th>
+                                        <th>主机名</th>
+                                        <th>IP地址</th>
+                                        <th>体检开关</th>
+                                        <th>采集开关</th>
+                                        <th>主机状态</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(function(){
+            function getNodeUrl(th,node, url){
+                var u = '';
+                var a = $(th).tree('getParent',node.target);
+                if (a){
+                    u = '_'+node.id;
+                    url = u+url;
+                    return getNodeUrl(th, a, url);
+                }else{
+                    url = node.id+url;
+                    return url;
+                }
+            }
+            var datatables=$('#xx').dataTable({
+                "sPaginationType": "full_numbers"
+            });
+            $('#tt').tree({
+                onClick: function(node){
+                    var url = '';
+                    var urllist = getNodeUrl(this, node, url);
+                    $.get("{% url "servertreelist" %}?node="+urllist,function(data){
+                        data = JSON.parse(data);
+                        datatables.fnClearTable();
+                        $.each(data,function(index,d){
+                            if (d[3]){
+                                var detect = '<img src="/static/admin/img/icon-yes.gif">已启用';
+                            }else{
+                                detect = '<img src="/static/admin/img/icon-no.gif">未启用';
+                            }
+                            if (d[4]){
+                                var collect = '<img src="/static/admin/img/icon-yes.gif">已启用';
+                            }else{
+                                collect = '<img src="/static/admin/img/icon-no.gif">未启用';
+                            }
+                            if (d[5] == "11"){
+                                var status = '<img src="/static/admin/img/icon-yes.gif">运行中';
+                            }else{
+                                status = '<img src="/static/admin/img/icon-no.gif">维护中';
+                            }
+                            var devaction = '<a href="/system/server/detail.html/'+d[6]+'" class="btn btn-primary-outline" onclick="return showAddAnotherPopup(this);" data-toggle="tooltip" title="主机详情"><i class="fa fa-eye"></i></a> ' +
+                                    '<a href="/system/servermonitor.html/'+d[6]+'" class="btn btn-primary-outline" onclick="return showAddAnotherPopup(this);" data-toggle="tooltip" title="主机监控"><i class="fa fa-bar-chart-o"></i></a>';
+                            datatables.fnAddData([d[0],d[1],d[2],detect,collect,status,devaction]);
+                        });
+                    });
+                }
+            });
+        })
+    </script>
+{% endblock %}
+

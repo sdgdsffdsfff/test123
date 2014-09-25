@@ -1,0 +1,45 @@
+{% extends 'myprofile/base.html' %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <label style="font-size: 15px;color: #0066CC;margin-top:3px;margin-bottom: 0;">
+                        <span class="glyphicon glyphicon-info-sign"></span> 用户
+                    </label>
+                </div>
+                <div class="panel-body">
+                      <table class="table  table-hover table-bordered">
+                        <thead>
+                        <tr>
+                            <th><a href="?order_type=ip">帐号</a> <i class="fa fa-long-arrow-down">(排序)</i></th>
+                            <th><a href="?order_type=category">昵称</a></th>
+                            <th><a href="?order_type=idc">邮箱</a></th>
+                            <th><a href="?order_type=status">手机</a></th>
+                            <th><a href="?order_type=status">权限组</a></th>
+                            <th><a href="#">操作</a></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for idc in users %}
+                            <tr>
+                                <td>{{ idc.username }}</td>
+                                <td>{{ idc.first_name }}</td>
+                                <td>{{ idc.email }}</td>
+                                <td>{{ idc.last_name }}</td>
+                                <td>{% for n in idc.groups.all %}
+                                        {{ n.name }}
+                                    {% endfor %}
+                                </td>
+                                <td><a href="useredit/{{ idc.id }}">编辑</a> |
+                                    <a href="#" id="{{ idc.id }}" class="del_ip">删除</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

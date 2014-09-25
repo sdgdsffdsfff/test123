@@ -1,0 +1,217 @@
+{% extends 'networkcenter/base.html' %}
+{% block content %}
+    <script>
+    $(function(){
+        $('.online').click(function(){
+            $('#id_host_id').val(this.id);
+            var name = $('#'+this.id).parent().siblings().first().text();
+            $('#id_name').val(name)
+        });
+        $('.oscancel').click(function(){
+            var id = this.id;
+            $.get("/networkcenter/osinstallcancel/"+id,function(data){
+                data = JSON.parse(data);
+                if (data.code == 1){
+                    alertify.alert("撤销成功");
+                    $('#alertify-ok').live("click",function(){
+                    $('#'+id).parent().parent().remove();
+                    });
+                }else if (data.code == 0){
+                    alertify.alert("撤销失败");
+                }
+            });
+        });
+        $('#actioninstall').click(function(){
+            $.get("/networkcenter/osinstallaction",function(data){
+                data = JSON.parse(data);
+                if (data.code == 1){
+                    alertify.alert("安装开始");
+                    $('#alertify-ok').live("click",function(){
+                        window.location.reload();
+                    });
+                }else if (data.code == 0){
+                    alertify.alert("安装失败"+data.message['auth']);
+                }else if (data.code == 2){
+                    alertify.alert("没有可安装任务");
+                }
+            });
+        });
+        var options = {
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if (data.code == 1){
+                        $('#hostonline').fadeOut();
+                        alertify.alert("添加成功");
+                        $('#alertify-ok').live("click",function(){
+                            window.location.reload();
+                        });
+                    }else if (data.code == 0){
+                        $(".host_id").text(data.message['host_id']);
+                        $(".hostgroup").text(data.message['hostgroup']);
+                        $(".business").text(data.message['business']);
+                        $(".users").text(data.message['users']);
+                        $(".online").text(data.message['online']);
+                        $(".name_error").text(data.message['name_error']);
+                        $(".hostapp_error").text(data.message['hostapp_error']);
+                        $(".auth").text(data.message['auth']);
+                    }
+                }
+        };
+        // ajaxForm
+        $("#hostonlineform").ajaxForm(options);
+    });
+    </script>
+    <div class="navbar">
+        <div class="navbar-inner">
+            <label><i class="fa fa-tachometer fa-2x"></i>安装队列</label>
+        </div>
+    </div>
+    <table class="table table-hover table-bordered" style="padding: 1px;font-size: 10px">
+        <thead>
+        <tr class="active">
+            <th>主机名</th>
+            <th>序列号</th>
+            <th>管理IP</th>
+            <th>系统IP</th>
+            <th>装机模板</th>
+            <th>软件包</th>
+            <th>安装进度</th>
+            <th>提交时间</th>
+            <th>状态</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for idc in idcs %}
+            <tr>
+                <td>{{ idc.name }}</td>
+                <td><a href="#">{{ idc.host.sn }}</a></td>
+                <td>{{ idc.host.ip_ilo }}</td>
+                <td>{{ idc.ip }}</td>
+                <td>{{ idc.os_template }}</td>
+                <td>{% for soft in  idc.soft.all%}
+                        {{ soft.name }}
+                    {% endfor %}
+                </td>
+                <td><div class="progress progress-striped active" style="margin-bottom: 0px">
+                       <div id="hostprogress{{ idc.id }}" class="progress-bar"  role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: {{ idc.progress }}%">{{ idc.progress }}%</div>
+                     </div>
+                     {% ifequal idc.status_id '01' %}
+                        <script>
+                            $(document).ready(function(){
+                                var progresspump = setInterval(function(){
+                                    /* query the completion percentage from the server */
+                                    $.get("/networkcenter/installprogress/{{ idc.id }}",function(result){
+                                       /* update the progress bar width */
+                                       var result= eval('('+result+')');
+                                       $.each(result,function(index,d){
+                                       var data = d.job_percent;
+                                        /* update the progress bar width */
+                                        $("#hostprogress{{ idc.id }}").css('width',data+'%');
+                                        /* and display the numeric value */
+                                        $("#hostprogress{{ idc.id }}").text(data+'%');
+                                        /* test to see if the job has completed */
+                                        if(data > 99.999) {
+                                            window.location.reload();
+                                            clearInterval(progresspump);
+                                        }
+                                    })
+                                    })
+                                }, 5000);});
+                        </script>
+                     {% endifequal %}
+                </td>
+                <td>{{ idc.create_time | date:"c" }}</td>
+                <td>{% ifequal idc.status_id '00'  %}
+                        待安装
+                    {% endifequal %}
+                    {% ifequal idc.status_id '01'  %}
+                        安装中
+                    {% endifequal %}
+                    {% ifequal idc.status_id '10'  %}
+                        安装失败
+                    {% endifequal %}
+                    {% ifequal idc.status_id '11'  %}
+                        安装完成
+                    {% endifequal %}
+                </td>
+                <td>{% ifequal idc.status_id '11'  %}
+                       <a href="" data-toggle="modal" data-target="#hostonline" id="{{ idc.id }}" class="online">上线</a>
+                    {% endifequal %}
+                    {% ifequal idc.status_id '01'  %}
+                       <a href="#" id="{{ idc.id }}" class="oscancel">撤销</a>
+                    {% endifequal %}
+                    {% ifequal idc.status_id '00'  %}
+                       <a href="#" id="{{ idc.id }}" class="oscancel">撤销</a>
+                    {% endifequal %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <span><button id="actioninstall" type="button" class="btn btn-warning">执行安装</button></span>
+    <ul class="pager">
+        <li>
+            {% if idcs.has_previous %}
+                <a href="?page={{ idcs.previous_page_number }}">前一页</a>
+            {% endif %}
+        </li>
+        <li>
+            {% if idcs.has_next %}
+                <a href="?page={{ idcs.next_page_number }}">后一页</a>
+            {% endif %}
+        </li>
+        <li>
+            第 {{ idcs.number }} 页 ，共{{ idcs.paginator.num_pages }}页.
+        </li>
+    </ul>
+    <div id="hostonline" class="modal" tabindex="-1" role="dialog" aria-labelledby="hostonline" aria-hidden="true">
+        <form  id="hostonlineform" class="form-search" method="POST"  enctype="multipart/form-data" name="form" action="{% url "hostonline" %}">
+            {% csrf_token %}
+            <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="hostonline">主机上线</h4>
+                  </div>
+                  <div class="modal-body">
+                    <table class="table-responsive">
+                        <tbody>
+                            <tr>
+                                <th><label for="id_name">主机名:</label></th>
+                                <td>{{ form.name }}</td>
+                                <td class="name_error auth errorInfo fa fa-star"></td>
+                            </tr>
+                            <tr>
+                                <th><label for="id_host_group">主机组:</label></th>
+                                <td>{{ form.host_group }}</td>
+                                <td class="hostgroup errorInfo fa fa-star"></td>
+                            </tr>
+                            <tr>
+                                <th><label for="id_business">业务线:</label></th>
+                                <td>{{ form.business }}</td>
+                                <td class="business errorInfo fa fa-star"></td>
+                            </tr>
+                            <tr>
+                                <th><label for="id_owner">负责人:</label></th>
+                                <td>{{ form.owner }}</td>
+                                <td class="users errorInfo fa fa-star"></td>
+                            </tr>
+                            <tr>
+                                <th></th>
+                                <td>{{ form.host_id }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                  </div>
+                  <div class="modal-footer">
+                      <span class="host_id online hostapp_error errorInfo" style="color:red;margin-right:300px">
+                      </span>
+                      <input type="submit" class="btn btn-warning" value="添加"  style="margin-left:400px">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+                </div><!-- /.modal-content -->
+             </div><!-- /.modal-dialog -->
+        </form>
+    </div>
+{% endblock %}

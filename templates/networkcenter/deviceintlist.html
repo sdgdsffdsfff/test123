@@ -1,0 +1,223 @@
+{% extends 'public/base.html' %}
+{% block page %}
+{% load guardian_tags %}
+    <style>
+        body{
+            padding: 0;
+        }
+    </style>
+    <script>
+        $(function () {
+            var options = {
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if (data.code == 1){
+                        $('#addrack').fadeOut();
+                        alertify.alert("添加成功");
+                        $('#alertify-ok').live("click",function(){
+                            window.location=window.location.href;
+                        });
+                    }else if (data.code == 0){
+                        $(".name").text(data.message['name']);
+                        $(".device").text(data.message['device']);
+                        $(".product").text(data.message['product']);
+                        $(".vendor").text(data.message['vendor']);
+                        $(".speed").text(data.message['speed']);
+                        $(".mac").text(data.message['mac']);
+                        $(".auth").text(data.message['auth']);
+                        $(".ip").text(data.message['ip']);
+                        $(".vlan").text(data.message['vlan']);
+                        $(".link").text(data.message['link']);
+                        $(".remark").text(data.message['remark']);
+                        $(".all").text(data.message['all']);
+                    }
+                }
+            };
+            // ajaxForm
+            var datatables=$('#xx').dataTable({
+                "sPaginationType": "full_numbers"
+            });
+            $("#rackform").ajaxForm(options);
+            $(".del_rack").click(function(){
+                var id = this.id;
+                alertify.confirm("确定要删除?",function(e){
+                    if(e) {
+                        $.get("/networkcenter/rackdel/"+id,function(data){
+                            data = JSON.parse(data);
+                            if (data.code == 1) {
+                                alertify.alert("删除成功");
+                                $('#'+id).parent().parent().remove();
+                            }else if(data.code == 0){
+                                alertify.alert("删除失败,"+data.message['auth']);
+                            }
+                        });
+                        return true;
+                    } else {
+                        return false;
+                    }
+                });
+            });
+            $('#go_page').click(function(){
+                var go_page = $('.go_page').val();
+                if (go_page != ''){
+                    window.location="/networkcenter/racklist?page="+go_page;
+                }else{
+                    alertify.alert("请输入页码！");
+                }
+            });
+            $('#search').click(function(){
+                 var search_var= $('.search').val();
+                if (search_var != ''){
+                    window.location="/networkcenter/apisearchrack?search_var="+search_var;
+                }
+            });
+        });
+    </script>
+    <div class="row" style="margin-top: 30px">
+        <div class="col-md-12">
+            <div class="panel panel-default modal-content">
+                <div class="panel-heading" style="background-color:transparent;">
+                    <label style="font-size: 15px;color: #0066CC;margin-top:3px;margin-bottom: 0;">
+                        <i class="fa fa-bar-chart-o"></i> {{ idc.device_type }} {{ idc }} 接口管理
+                    </label>
+                    <div class="btn-group pull-right">
+                        {% if perms.networkcenter.add_devicenic %}
+                            <a class="btn btn-primary-outline" data-toggle="modal" data-target="#addrack">添加接口</a>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="panel-body" style="padding: 5px">
+                    <table class="table  table-hover table-bordered" id="xx">
+                        <thead>
+                        <tr class="active">
+                            <th>接口</th>
+                            <th>MAC</th>
+                            <th>IP</th>
+                            <th>VLAN</th>
+                            <th>Link</th>
+                            <th>状态</th>
+                            <th>备注</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for rack in idcs %}
+                            <tr>
+                                <td>{{ rack.name }}</td>
+                                <td>{{ rack.mac }}</td>
+                                <td>{{ rack.ip }}</td>
+                                <td>{{ rack.vlan }}</td>
+                                <td>{{ rack.link }}</td>
+                                <td>{% if rack.status  %}
+                                    <img src="/static/admin/img/icon-yes.gif" alt="{{ rack.status }}"> 已用
+                                    {% else %}
+                                    <img src="/static/admin/img/icon-no.gif" alt="{{ rack.status }}"> 空闲
+                                    {% endif %}
+                                </td>
+                                <td>{{ rack.remark}}</td>
+                                <td>
+                                    {% if perms.networkcenter.change_devicenic %}
+                                        <a href="{% url "deviceintedit" rack.id %}" onclick="return showAddAnotherPopup(this);" data-toggle="tooltip" title="设备接口">
+                                            <span class="glyphicon glyphicon-edit"></span>
+                                        </a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <a class="btn btn-primary-outline" style="margin-left: 90%;display: inline-block"  href="javascript:window.close()" >返回</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="addrack" class="modal" style="display:none">
+        <form id="rackform" method="POST"  enctype="multipart/form-data" role="form"> {% csrf_token %}
+            <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-edit"></i> {{ idc }}添加接口</h4>
+                  </div>
+                  <div class="modal-body">
+                    <table class="table-responsive">
+                        <tbody>
+                            <tr>
+                                <th><label for="id_device">设备:</label></th>
+                                <td>{{ form.device }}</td>
+                                <td class="device auth errorInfo"></td>
+                            </tr>
+                            <tr>
+                                <th><label for="id_name">接口名:</label></th>
+                                <td>{{ form.name }}</td>
+                                <td class="name errorInfo"></td>
+                            </tr>
+                            <tr>
+                                <th><label for="id_mac">MAC:</label></th>
+                                <td>{{ form.mac }}</td>
+                                <td class="mac errorInfo"></td>
+                            </tr>
+                            <tr>
+                                <th><label for="id_ip">IP地址:</label></th>
+                                <td>{{ form.ip }}</td>
+                                <td class="ip errorInfo"></td>
+                            </tr>
+                            <tr>
+                                <th><label for="id_valn">VLAN:</label></th>
+                                <td>{{ form.vlan }}</td>
+                                <td class="vlan errorInfo"></td>
+                            </tr>
+                            <tr>
+                                <th><label for="id_link">Link:</label></th>
+                                <td>{{ form.link }}</td>
+                                <td class="link errorInfo"></td>
+                            </tr>
+                            <tr>
+                                <th><label for="id_product">型号:</label></th>
+                                <td>{{ form.product }}</td>
+                                <td class="product errorInfo"></td>
+                            </tr>
+                            <tr>
+                                <th><label for="id_vendor">厂商:</label></th>
+                                <td>{{ form.vendor }}</td>
+                                <td class="vendor errorInfo"></td>
+                            </tr>
+                            <tr>
+                                <th><label for="id_speed">速率:</label></th>
+                                <td>{{ form.speed }}</td>
+                                <td class="speed errorInfo"></td>
+                            </tr>
+                            <tr>
+                                <th><label for="id_remark">备注:</label></th>
+                                <td>{{ form.remark }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                  </div>
+                  <div class="modal-footer">
+                      <span class="all errorInfo" style="color:red;margin-right:300px"></span>
+                      <input type="submit" class="btn btn-primary-outline" value="添加" id="Save" style="margin-left:400px">
+                      <button type="button" class="btn btn-primary-outline" data-dismiss="modal">Close</button>
+                  </div>
+                </div><!-- /.modal-content -->
+             </div><!-- /.modal-dialog -->
+        </form>
+    </div>
+    <script src="/static/bootstrap/js/jquery.form.js"></script>
+    <script src="/static/bootstrap/js/jquery-ui.min.js"></script>
+    <script src="/static/bootstrap/js/jquery-ui-timepicker-addon.js"></script>
+    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/static/bootstrap/js/bootstrap-tooltip.js"></script>
+    <script src="/static/bootstrap/js/bootstrap-popover.js"></script>
+    <script src="/static/bootstrap/js/alertify.js"></script>
+    <script src="/static/bootstrap/js/jquery.cookie.js"></script>
+    <script src="/static/bootstrap/js/RelatedObjectLookups.js"></script>
+    <script src="/static/bootstrap/js/raphael.js"></script>
+    <script src="/static/bootstrap/js/chinamapPath.js"></script>
+    <script src="/static/bootstrap/js/jquery-jvectormap-1.2.2.min.js"></script>
+    <script src="/static/bootstrap/js/jquery-jvectormap-cn-merc-cn.js"></script>
+    <script src="/static/bootstrap/js/highcharts.js"></script>
+    <script src="/static/bootstrap/js/jquery.easyui.min.js"></script>
+    <script src="/static/bootstrap/js/jquery.dataTables.min.js"></script>
+    <script src="/static/bootstrap/js/assets/device.js"></script>
+{% endblock %}

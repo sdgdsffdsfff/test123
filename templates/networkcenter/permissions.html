@@ -1,0 +1,182 @@
+{% extends 'networkcenter/base.html' %}
+{% block content %}
+    <script type="text/javascript">
+        $(function () {
+            var options = {
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if (data.code == 1){
+                        $('#addidc').fadeOut();
+                        alertify.alert("添加成功");
+                        $('#alertify-ok').live("click",function(){
+                            window.location.reload();
+                        });
+                    }else if (data.code == 0){
+                        $(".name").text(data.message['name']);
+                        $(".auth").text(data.message['auth']);
+                    }
+                }
+            };
+            // ajaxForm
+            $("#adduserperm").ajaxForm(options);
+            $("#addgroupperm").ajaxForm(options);
+        });
+    </script>
+    <div class="navbar">
+        <div class="navbar-inner">
+            <label><i class="fa fa-tachometer fa-2x"></i>
+                <ol class="breadcrumb" style="display: inline-block;padding: 1px;margin-bottom:0px;background-color:transparent">
+                  <li><a href="#">{{ obj_name }}</a></li>
+                  <li><a href="#">{{ obj }}</a></li>
+                  <li class="active">权限管理</li>
+                </ol>
+            </label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+              <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <label style="font-size: 15px;color: #0066CC;margin-top:3px;margin-bottom: 0;">
+                            <span class="glyphicon glyphicon-info-sign"></span> 用户权限
+                        </label>
+                        <div class="btn-group pull-right">
+                            <a class="btn" data-toggle="modal" data-target="#adduserperm"><i class="icon-plus icon-white"></i>添加用户权限</a>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <table class="table table-hover table-bordered">
+                            <thead>
+                            <tr class="active">
+                                <th>User</th>
+                                <th>{{ user_perm_item.0.1 }}</th>
+                                <th>{{ user_perm_item.1.1 }}</th>
+                                <th>{{ user_perm_item.2.1 }}</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for k,v in obj_user_perm.items %}
+                                <tr>
+                                    <td><a href="#">{{ k.first_name }}</a></td>
+                                    <td>{% if user_perm_item.0.0 in v %}
+                                                <img src="/static/admin/img/icon-yes.gif">
+                                            {% else %}
+                                                <img src="/static/admin/img/icon-no.gif">
+                                        {% endif %}
+                                    </td>
+                                    <td>{% if user_perm_item.1.0 in v %}
+                                                <img src="/static/admin/img/icon-yes.gif">
+                                            {% else %}
+                                                <img src="/static/admin/img/icon-no.gif">
+                                        {% endif %}
+                                    </td>
+                                    <td>{% if user_perm_item.2.0 in v %}
+                                                <img src="/static/admin/img/icon-yes.gif">
+                                            {% else %}
+                                                <img src="/static/admin/img/icon-no.gif">
+                                        {% endif %}
+                                    </td>
+                                    <td><a href="user/{{ k.id }}">编辑</a></td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+              </div>
+        </div>
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <label style="font-size: 15px;color: #0066CC;margin-top:3px;margin-bottom: 0;">
+                            <span class="glyphicon glyphicon-info-sign"></span> 用户组权限
+                        </label>
+                        <div class="btn-group pull-right">
+                            <a class="btn" data-toggle="modal" href="#addgroupperm"><i class="icon-plus icon-white"></i>添加组权限</a>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <table class="table table-hover table-bordered">
+                            <thead>
+                            <tr class="active">
+                                <th>User</th>
+                                <th>{{ user_perm_item.0.1 }}</th>
+                                <th>{{ user_perm_item.1.1 }}</th>
+                                <th>{{ user_perm_item.2.1 }}</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for k,v in obj_groups_perm.items %}
+                                <tr>
+                                    <td><a href="#">{{ k }}</a></td>
+                                    <td>{% if user_perm_item.0.0 in v %}
+                                                <img src="/static/admin/img/icon-yes.gif">
+                                            {% else %}
+                                                <img src="/static/admin/img/icon-no.gif">
+                                        {% endif %}
+                                    </td>
+                                    <td>{% if user_perm_item.1.0 in v %}
+                                                <img src="/static/admin/img/icon-yes.gif">
+                                            {% else %}
+                                                <img src="/static/admin/img/icon-no.gif">
+                                        {% endif %}
+                                    </td>
+                                    <td>{% if user_perm_item.2.0 in v %}
+                                                <img src="/static/admin/img/icon-yes.gif">
+                                            {% else %}
+                                                <img src="/static/admin/img/icon-no.gif">
+                                        {% endif %}
+                                    </td>
+                                    <td><a href="group/{{ k.id }}">编辑</a></td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+              </div>
+        </div>
+        <div id="adduserperm" class="modal" tabindex="-1" role="dialog" aria-labelledby=addidcLabel" aria-hidden="true">
+            <form id="userpermform" class="form-search" method="POST"  enctype="multipart/form-data" name="form">
+                {% csrf_token %}
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="myModalLabel">添加IP</h4>
+                      </div>
+                      <div class="modal-body">
+                        {{ usersform.as_table }}
+                      </div>
+                      <div class="modal-footer">
+                          <span class="errorInfo name auth" style="color:red;margin-right:300px"></span>
+                          <input type="submit" class="btn btn-warning" value="添加"  style="margin-left:400px">
+                          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                      </div>
+                    </div><!-- /.modal-content -->
+                 </div><!-- /.modal-dialog -->
+            </form>
+        </div>
+        <div id="addgroupperm" class="modal" tabindex="-1" role="dialog" aria-labelledby=addidcLabel" aria-hidden="true">
+            <form id="grouppermform" class="form-search" method="POST"  enctype="multipart/form-data" name="form">
+                {% csrf_token %}
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="myModalLabel">添加IP</h4>
+                      </div>
+                      <div class="modal-body">
+                        {{ groupsform.as_table }}
+                      </div>
+                      <div class="modal-footer">
+                          <span class="errorInfo name auth" style="color:red;margin-right:300px"></span>
+                          <input type="submit" class="btn btn-warning" value="添加"  style="margin-left:400px">
+                          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                      </div>
+                    </div><!-- /.modal-content -->
+                 </div><!-- /.modal-dialog -->
+            </form>
+        </div>
+    </div>
+{% endblock %}

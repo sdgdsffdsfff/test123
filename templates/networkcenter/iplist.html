@@ -1,0 +1,142 @@
+{% extends 'networkcenter/idcindex.html' %}
+{% block content %}
+    <div class="panel panel-default" style="margin-bottom: 10px">
+        <div class="panel-heading">
+            <h3 class="panel-title" style="display: inline-block"><i class="fa fa-th-large"></i> {{ ipsec.name | default:'所有IP'}}</h3>
+        </div>
+        <div class="panel-body">
+            <table class="table  table-hover table-bordered" id="iptable">
+                <thead>
+                <tr>
+{#                    <th style="width: 15px"><input type="checkbox" id="action-toggle" ></th>#}
+                    <th>IP地址</th>
+                    <th>类 别</th>
+                    <th>所属IDC</th>
+                    <th>备 注</th>
+                    <th>状 态</th>
+                    <th>操 作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for idc in ip_pool %}
+                    <tr>
+{#                        <td><input type="checkbox" class="action-select" value="{{ idc.id }}" name="_selected_action"></td>#}
+                        <td>{{ idc.name }}</td>
+                        <td>{{ idc.category }}</td>
+                        <td>{{ idc.idc }}</td>
+                        <td>{{ idc.remark }}</td>
+                        <td>{% if idc.status  %}
+                            <img src="/static/admin/img/icon-yes.gif" alt="{{ idc.status }}"> 已用
+                            {% else %}
+                            <img src="/static/admin/img/icon-no.gif" alt="{{ idc.status }}"> 空闲
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if perms.assets.change_ipadress %}
+{#                                <a href="{% url "ipedit" idc.id %}"><span class="glyphicon glyphicon-edit"></span></a> |#}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        $(function(){
+            $('#iptable').dataTable({
+                "sPaginationType": "full_numbers"
+            });
+        });
+    </script>
+    <div id="addip" class="modal" tabindex="-1" role="dialog" aria-labelledby=addidcLabel" aria-hidden="true">
+        <form id="ipform" class="form-search" method="POST"  enctype="multipart/form-data" name="form" action="{% url "iplist"%}">
+            {% csrf_token %}
+            <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-save"></i> 添加IP</h4>
+                  </div>
+                  <div class="modal-body">
+                    <table class="table-responsive">
+                        <tbody>
+                            <tr>
+                                <th><label for="id_section">IP段:</label></th>
+                                <td>{{ form.section }}</td>
+                                 <td class="section errorInfo fa fa-star"></td>
+                            </tr>
+                            <tr>
+                                <th><label for="id_name">IP地址:</label></th>
+                                <td>{{ form.name }}</td>
+                                <td class="ip auth errorInfo fa fa-star"></td>
+                            </tr>
+                            <tr>
+                                <th><label for="id_category">类别:</label></th>
+                                <td>{{ form.category }}</td>
+                            </tr>
+                            <tr>
+                                <th><label for="id_idc">机房:</label></th>
+                                <td>{{ form.idc }}</td>
+                                <td class="idc errorInfo fa fa-star"></td>
+                            </tr>
+                            <tr>
+                                <th><label for="id_remark">备注:</label></th>
+                                <td>{{ form.remark }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                  </div>
+                  <div class="modal-footer">
+                      <input type="submit" class="btn btn-primary-outline" value="添加"  style="margin-left:400px">
+                      <button type="button" class="btn btn-primary-outline" data-dismiss="modal">Close</button>
+                  </div>
+                </div><!-- /.modal-content -->
+             </div><!-- /.modal-dialog -->
+        </form>
+    </div>
+    <div id="addiprang" class="modal" tabindex="-1" role="dialog" aria-labelledby=addidcLabel" aria-hidden="true">
+        <form id="iprangform" class="form-search" method="POST"  enctype="multipart/form-data" name="form" action="/apps/networkcenter/addiprang">
+            {% csrf_token %}
+            <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-save"></i> 添加IP</h4>
+                  </div>
+                  <div class="modal-body">
+                        <table class="table-responsive">
+                            <tbody>
+                                <tr>
+                                    <th><label for="id_section">IP段:</label></th>
+                                    <td>{{ form.section }}</td>
+                                     <td class="section errorInfo fa fa-star"></td>
+                                </tr>
+                                <tr>
+                                    <th><label for="id_name">IP地址:</label></th>
+                                    <td>{{ form.name }}</td>
+                                    <td class="ip auth errorInfo fa fa-star"></td>
+                                </tr>
+                                <tr>
+                                    <th><label for="id_category">类别:</label></th>
+                                    <td>{{ form.category }}</td>
+                                </tr>
+                                <tr>
+                                    <th><label for="id_idc">机房:</label></th>
+                                    <td>{{ form.idc }}</td>
+                                    <td class="idc errorInfo fa fa-star"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                  </div>
+                  <div class="modal-footer">
+                      <span class="errorInfo iprang" style="color:red;margin-right:300px">填写格式:172.16.10.1-100</span>
+                      <input type="submit" class="btn btn-primary-outline" value="添加" id="ipsave"  style="margin-left:400px">
+                      <button type="button" class="btn btn-primary-outline" data-dismiss="modal">Close</button>
+                  </div>
+                </div><!-- /.modal-content -->
+             </div><!-- /.modal-dialog -->
+        </form>
+    </div>
+    <script src="/static/bootstrap/js/assets/ip.js"></script>
+{% endblock %}

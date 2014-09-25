@@ -1,0 +1,30 @@
+{% extends 'monitorcenter/base.html' %}
+{% block page %}
+    <style>
+        .col-md-4 img{border:none;width: 100%;height:280px;}
+    </style>
+    <div class="row" id="iframe">
+        <ul class="nav nav-tabs nav-justified" style="margin-bottom: 5px;">
+            {% for grp in cacti %}
+                {% ifequal system.id grp.id %}
+                    <li class="active"><a href="{% url "monitorsystem" grp.id %}">{{ grp.name }}</a></li>
+                {% else %}
+                    <li><a href="{% url "monitorsystem" grp.id %}">{{ grp.name }}</a></li>
+                {% endifequal %}
+            {% endfor %}
+        </ul>
+        {% for id in system.graphsid_set.all %}
+            <div class="col-md-4">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+{#                        <h3 class="panel-title">{{ id.name }}</h3>#}
+                    </div>
+                    <div class="panel-body">
+                        <a href="{{ system.cacti_host.host }}/graph.php?action=view&rra_id=all&local_graph_id={{ id.graph_id }}" target='_blank'>
+                        <img src="{{ system.cacti_host.host }}/graph_image.php?action=view&local_graph_id={{ id.graph_id }}&rra_id=1" /></a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

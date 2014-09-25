@@ -1,0 +1,55 @@
+{% extends 'public/base.html' %}
+{% block header %}
+    {% include "public/header.html" %}
+{% endblock %}
+{% block page %}
+    <div class="row">
+        <div class="col-md-2">
+            <div class="panel panel-default">
+                  <div class="panel-heading">
+                      <span class="glyphicon glyphicon-home"></span>
+                      <label>我的蜂巢</label>
+                  </div>
+                  <div class="panel-body">
+                      <ul class="nav nav-pills nav-stacked">
+                          <li><a href="#">我的任务</a></li>
+                          <li><a href="#">我的消息</a></li>
+                          <li><a href="{% url "profileedit" %}">我的资料</a></li>
+                      </ul>
+                  </div>
+            </div>
+            {% if perms.auth.add_user %}
+                <div class="panel panel-default">
+                      <div class="panel-heading">
+                          <span class="glyphicon glyphicon-hdd"></span>
+                          <label>用户管理</label>
+                      </div>
+                      <div class="panel-body">
+                          <ul class="nav nav-stacked">
+                              <li class="active"><a href="{% url "useradd" %}">添加用户</a></li>
+                              <li><a href="{% url "userlist" %}">用户列表</a></li>
+                          </ul>
+                      </div>
+                </div>
+                <div class="panel panel-default">
+                      <div class="panel-heading">
+                          <span class="glyphicon glyphicon-cloud"></span>
+                          <label>权限管理</label>
+                      </div>
+                      <div class="panel-body">
+                          <ul class="nav nav-stacked">
+                              <li class="active"><a href="{% url "grouplist" %}">权限组列表</a></li>
+                              <li><a href="{% url "groupadd" %}">添加权限组</a></li>
+                           </ul>
+                      </div>
+                </div>
+            {% endif %}
+        </div>
+        <div class="col-md-10">
+            {% block content %} {% endblock %}
+        </div>
+    </div>
+{% endblock %}
+{% block footer %}
+    {% include "public/footer.html" %}
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends 'myprofile/base.html' %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <label style="font-size: 15px;color: #0066CC;margin-top:3px;margin-bottom: 0;">
+                        <span class="glyphicon glyphicon-info-sign"></span> 权限组编辑
+                    </label>
+                </div>
+                <div class="panel-body">
+                      <form id="groupsform" class="form-search" method="POST"  enctype="multipart/form-data" name="form">
+                          {% csrf_token %}
+                          <table>
+                              <tbody>
+                                <tr>
+                                    <th><label for="id_name">组名:</label></th>
+                                    <td>{{ form.name }}</td>
+                                    <td></td>
+                                    <td class="name auth errorInfo fa fa-star"></td>
+                                </tr>
+                                <tr>
+                                    <th><label for="id_permissions_old">权限:</label></th>
+                                    <td>{{ form.permissions_old }}</td>
+                                    <td style="width: 30px;padding: 5px;font-size: 20px">
+                                        <a  href='#' id="id_permissions_add_link" class="glyphicon glyphicon-circle-arrow-right"></a><br>
+                                        <a  href='#' id="id_permissions_remove_link" class="glyphicon glyphicon-circle-arrow-left"></a>
+                                    </td>
+                                    <td>{{ form.permissions }}{{ form.permissions.errors }}</td>
+                                </tr>
+                                <tr>
+                                    <th></th>
+                                    <td style="padding: 10px 50px"><a  href='#' id="id_permissions_add_all_link" class="btn-sm btn-primary">选择全部</a></td>
+                                    <td></td>
+                                    <td style="padding: 10px 50px"><a  href='#' id="id_permissions_remove_all_link" class="btn-sm btn-primary">全部取消</a></td>
+                                </tr>
+                             </tbody>
+                          </table><br>
+                          <input type="submit" class="btn btn-warning" value="保存">
+                          <span class="errorInfo" style="color:red;margin-right:150px;"></span>
+                      </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/static/bootstrap/js/profile/groups.js"></script>
+{% endblock %}

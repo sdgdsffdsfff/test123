@@ -1,0 +1,79 @@
+{% extends 'public/base.html' %}
+{% block header %}
+{#     <link href="/static/bootstrap/css/easyui.css" rel="stylesheet" media="screen">#}
+    <header class="container navbar-fixed-top" role="banner">
+        <a href="/" class="navbar-brand"><img src="/static/bootstrap/img/logo_test.png" ></a>
+        <ul class="nav navbar-nav">
+              <li><a href="{% url "systemindex" %}">系统运维中心</a></li>
+              <li class="srvtree"><a href="{% url "servertreelist" %}">服务树</a></li>
+              <li class="server"><a href="{% url "serverindex" %}">主机管理</a></li>
+              <li class="cobbler"><a href="#">配置管理</a></li>
+              <li class="network"><a href="#">代码发布</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                <a href="{% url "profile" %}" class="btn btn-xs">欢迎～
+                    <span class="glyphicon glyphicon-user"></span> {{ user.first_name }}
+                </a>
+            </li>
+            <li>
+                <a href="{%url "logout"%}" class="btn btn-xs">
+                    <span class="glyphicon glyphicon-off"></span> 退出
+                </a>
+            </li>
+        </ul>
+    </header>
+{% endblock %}
+{% block page %}
+    <div class="row" style="margin-top: 5px">
+        <div class="col-md-2">
+            <div class="panel-group" id="accordion">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <i class="fa fa-desktop"></i>
+                            <label>服务器</label>
+                        </h4>
+                    </div>
+                    <div class="panel-body">
+                        <ul class="nav  nav-stacked">
+                            <li class="active"><a href="{% url "serverindex" %}">资源池</a></li>
+                            <li class="active"><a href="{% url "physerver" %}">物理机</a></li>
+                            <li class="active"><a href="{% url "vrtserver" %}">虚拟机</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-10">
+            {% block content %} {% endblock %}
+        </div>
+    </div>
+    <script>
+        $(function(){
+            var datatables=$('#xx').dataTable({
+                "sPaginationType": "full_numbers"
+            });
+            $('.close').click(function(){
+                 window.location.reload();
+            });
+        });
+        function ajaxget(link){
+            var url = link.href;
+            $.get(url, function(data){
+                data = JSON.parse(data);
+                if (data.code == 1){
+                    $('.alert-yes > p').html("执行成功");
+                    $('.alert-yes').show();
+                }else if (data.code == 0){
+                    $('.alert-no > p').html(data.message['error']);
+                    $('.alert-no').show();
+                }
+            });
+            return false;
+        }
+    </script>
+{% endblock %}
+{% block footer %}
+    {% include "public/footer.html" %}
+{% endblock %}

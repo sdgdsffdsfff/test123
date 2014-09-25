@@ -1,0 +1,477 @@
+{% extends 'monitorcenter/base.html' %}
+{% block header %}
+    <header class="container" role="banner">
+        <a href="/" class="navbar-brand"><img src="/static/bootstrap/img/logo_test.png" ></a>
+        <ul class="nav navbar-nav">
+            <li><a href="{% url "monitorindex" %}">蜂巢监控中心</a></li>
+            <li><a href="#">网站数据</a></li>
+            <li><a href="{% url "monitorsystemindex" %}">系统监控</a></li>
+            <li><a href="{% url "monitornetworkindex" %}">网络监控</a></li>
+            <li><a href="{% url "monitordbindex" %}">数据库监控</a></li>
+            <li class="zhiban"><a href="{% url "monitorzhiban" %}">值班表</a></li>
+        </ul>
+        <div class="btn-group" style="margin-top: 18px;">
+              <button class="btn btn-primary-outline dropdown-toggle" data-toggle="dropdown">子监控系统<span class="caret"></span></button>
+              <ul class="dropdown-menu">
+                    <li><a href="http://192.168.16.200/cacti/index.php" onclick="return showiframe(this);">系统_Cacti</a></li>
+                    <li><a href="http://10.88.1.77/sjhlcacti/" onclick="return showiframe(this);">世纪互联_Cacti</a></li>
+                    <li><a href="http://monitor.lefeng.com/nagios" onclick="return showiframe(this);">光环新网_Nagios</a></li>
+                    <li><a href="http://10.88.1.139/nagios/" onclick="return showiframe(this);">世纪互联_Nagios</a></li>
+                    <li><a href="http://192.168.7.93/netcacti/" onclick="return showiframe(this);">网络_Cacti</a></li>
+                    <li><a href="http://monitor.lefeng.com/cacti/index.php" onclick="return showiframe(this);">数据库_Cacti</a></li>
+                    <li><a href="http://192.168.3.137/smokeping/smokeping.cgi" onclick="return showiframe(this);">光环新网Somkeping</a></li>
+                    <li><a href="http://10.88.1.77/smokeping/smokeping.cgi" onclick="return showiframe(this);">世纪互联Somkeping</a></li>
+                    <li><a href="http://192.168.0.223/" onclick="return showiframe(this);">内网监控系统</a></li>
+              </ul>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                <a href="{% url "profile" %}" class="btn btn-xs">欢迎～
+                    <span class="glyphicon glyphicon-user"></span> {{ user.first_name }}
+                </a>
+            </li>
+            <li>
+                <a href="{%url "logout"%}" class="btn btn-xs">
+                    <span class="glyphicon glyphicon-off"></span> 退出
+                </a>
+            </li>
+        </ul>
+    </header>
+{% endblock %}
+{% block page %}
+    <style>
+        .header{display: none;}
+        body{padding-top:0}
+        .panel-body{padding: 0;}
+        .col-md-6 img{border:none;width: 100%;height:280px;}
+        .col-md-4 img{border:none;width: 100%;height:280px;}
+        .col-md-5 img{border:none;width: 100%;height:280px;}
+        .col-md-12 .navbar {min-height: 10px;margin-bottom: 10px;border: 1px solid #bce8f1;}
+        .col-md-12 {padding-left: 1px;padding-right: 1px;padding-bottom: 1px;}
+        .col-md-4 {padding-left: 1px;padding-right: 1px;padding-bottom: 1px;}
+        .col-md-5 {padding-left: 1px;padding-right: 1px;padding-bottom: 1px;}
+        .col-md-6 {padding-left: 1px;padding-right: 1px;padding-bottom: 1px;}
+        .col-md-7 {padding-left: 1px;padding-right: 1px;padding-bottom: 1px;}
+        .col-md-8 {padding-left: 1px;padding-right: 1px;padding-bottom: 1px;width: 59.66666666666666%;}
+        .panel-heading {padding: 6px 15px;border-radius: 15px 15px 0 0;}
+        {#    .carousel-control {color: #EB8B78;}#}
+        {#    .carousel-indicators li{border: 1px solid #EB8B78;}#}
+        {#    .carousel-indicators .active {background-color:#EB8B78;}#}
+    </style>
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel panel-primary">
+                <div class="toptips" style="height: 10px">
+                </div>
+            </div>
+            <div class="panel-body" style="padding: 5px" id="iframe">
+                <script>
+                    !function ($) {
+                        var $window = $(window);
+                        $(document).ready(function() {
+                            $('.carousel').carousel({
+                                interval: 2000
+                            });
+                        });
+                    } (window.jQuery);
+                </script>
+                <div class="col-md-4">
+                    <div class="panel panel-primary">
+                        {% if cacti %}
+                            <div class="panel-heading" style="background: #953b39">
+                                 <h3 class="panel-title fa fa-globe fa-1x"> 应用系统监控</h3>
+                            </div>
+                        {% else %}
+                            <div class="panel-heading">
+                                 <h3 class="panel-title fa fa-globe fa-1x"> 应用系统监控</h3>
+                            </div>
+                        {% endif %}
+                        <div class="panel-body" style="height: 280px;border: 1px solid #999999">
+                            <div id="myCarousel" class="carousel">
+                                  <ol class="carousel-indicators">
+                                    <li data-target="#carousel-example-generic" data-slide-to="0" class=""></li>
+                                    <li data-target="#carousel-example-generic" data-slide-to="1" class="active"></li>
+                                  </ol>
+                                  <div class="carousel-inner">
+                                        {% for ccid in cacti %}
+                                            <div class="item">
+                                                <a href="http://192.168.16.200/cacti/graph.php?action=view&rra_id=all&local_graph_id={{ ccid }}" target='_blank'>
+                                                  <img style="height: 278px" src="http://192.168.16.200/cacti/graph_image.php?action=view&local_graph_id={{ ccid }}&rra_id=1" />
+                                                </a>
+                                            </div>
+                                        {% endfor %}
+                                        {% if not cacti %}
+                                            <div class="item">
+                                                <a href="http://192.168.16.200/cacti/graph.php?action=view&rra_id=all&local_graph_id=29138" target='_blank'>
+                                                 <img style="height: 278px" src="http://192.168.16.200/cacti/graph_image.php?action=view&local_graph_id=29138&rra_id=1" />
+                                                </a>
+                                                 <div class="carousel-caption">
+                                                     <h3 style="color: #5bc0de">系统无异常,休息一下吧</h3>
+                                                 </div>
+                                            </div>
+                                            <div class="item">
+                                                 <img style="height: 278px" src="http://192.168.16.200/cacti/graph_image.php?action=view&local_graph_id=31545&rra_id=1" />
+                                                 <div class="carousel-caption">
+                                                     <h3 style="color: #5bc0de">系统无异常,休息一下吧</h3>
+                                                 </div>
+                                            </div>
+                                            <div class="item">
+                                                 <img style="height: 278px" src="http://192.168.16.200/cacti/graph_image.php?action=view&local_graph_id=31499&rra_id=1" />
+                                                 <div class="carousel-caption">
+                                                     <h3 style="color: #5bc0de">系统无异常,休息一下吧</h3>
+                                                 </div>
+                                            </div>
+                                            <div class="item">
+                                                 <img style="height: 278px" src="http://192.168.16.200/cacti/graph_image.php?action=view&local_graph_id=30888&rra_id=1" />
+                                                 <div class="carousel-caption">
+                                                     <h3 style="color: #5bc0de">系统无异常,休息一下吧</h3>
+                                                 </div>
+                                            </div>
+                                        {% endif %}
+                                  </div>
+                                  <a class="left carousel-control" style="background:transparent" href="#myCarousel" data-slide="prev">
+                                    <span class="glyphicon glyphicon-chevron-left"></span>
+                                  </a>
+                                  <a class="right carousel-control" style="background:transparent" href="#myCarousel" data-slide="next">
+                                    <span class="glyphicon glyphicon-chevron-right"></span>
+                                  </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4" >
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                          <h3 class="panel-title fa fa-globe fa-1x"> 网络质量监控</h3>
+                        </div>
+                        <div class="panel-body" style="border: 1px solid #999999">
+                            <div id="map" style="height: 278px"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                          <h3 class="panel-title fa fa-globe fa-1x"> 最新报警信息</h3>
+                        </div>
+                        <div class="panel-body console" style="height: 280px;border: 1px solid #999999; padding: 5px">
+                            {% for sms in alert_sms %}
+                            <p style="color: #5B5C5C;"> <strong style="color: #ac2925">{{ sms }}</strong>
+                            </p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                          <h3 class="panel-title fa fa-globe fa-1x"> 订单趋势</h3>
+                        </div>
+                        <div id="myChartorder" class="panel-body" style="border: 1px solid #999999;height: 280px">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4" style="height: 278px">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                          <h3 class="panel-title fa fa-globe fa-1x"> 撤单分布(最近一小时)</h3>
+                            <button class="btn btn-xs" id="lastweek">最近一周</button>
+                        </div>
+                        <div  id="myChart" class="panel-body" style="border: 1px solid #999999;height: 278px">
+                        </div>
+                        <div id="myChartweek" class="panel-body" style="border: 1px solid #999999;height: 278px">
+                        </div>
+                        <div id="weekpopover" class="popover fade right in" style="top: 50px; left:320px; display: none">
+                            <div class="arrow" style="top: 50.53191489361703%;"></div>
+                            <h3 class="popover-title">支付失败分类</h3>
+                            <div class="popover-content">
+                                {% for i in order_pay_fail_week_list %}
+                                    <p style="font-size:8px">{{ i.0 }} : {{ i.1 }}笔</p>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div id="dailypopover" class="popover fade right in" style="top: 50px; left:320px; display: none">
+                            <div class="arrow" style="top: 50.53191489361703%;"></div>
+                            <h3 class="popover-title">支付失败分类</h3>
+                            <div class="popover-content">
+                                {% for i in orders_pay_fail_list %}
+                                    <p style="font-size:8px">{{ i.0 }} : {{ i.1 }}笔</p>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                          <h3 class="panel-title fa fa-globe fa-1x"> 地区跳出率</h3>
+                        </div>
+                        <div id="mytclv" class="panel-body" style="border: 1px solid #999999;height: 280px">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                          <h3 class="panel-title fa fa-globe fa-1x"> 总出口流量</h3>
+                        </div>
+                        <div class="panel-body">
+                            <a href="http://192.168.7.93/netcacti/graph.php?action=view&rra_id=all&local_graph_id=30389" target='_blank'>
+                            <img src="http://192.168.7.93/netcacti/graph_image.php?action=view&local_graph_id=30389&rra_id=1" /></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                          <h3 class="panel-title fa fa-globe fa-1x"> CDN总流量</h3>
+                        </div>
+                        <div class="panel-body">
+                            <a href="http://192.168.16.200/cacti/graph.php?action=view&rra_id=all&local_graph_id=33028" target='_blank'>
+                            <img src="http://192.168.16.200/cacti/graph_image.php?action=view&local_graph_id=33028&rra_id=1" /></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                          <h3 class="panel-title fa fa-globe fa-1x"> CDN地区流量</h3>
+                        </div>
+                        <div class="panel-body">
+                            <a href="http://192.168.16.200/cacti/graph.php?action=view&rra_id=all&local_graph_id=28504" target='_blank'>
+                            <img src="http://192.168.16.200/cacti/graph_image.php?action=view&local_graph_id=28504&rra_id=1" /></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(function(){
+            $("#lastweek").click(function(){
+                $("#myChart").toggle();
+            });
+            var pingdata = JSON.parse('{{ node_pool|safe}}');
+            $('#map').vectorMap({
+                map: 'cn_merc_en',
+                backgroundColor: '#ffffff',
+                zoomOnScroll: false,
+                zoomButtons : false,
+                regionStyle: {
+                    initial: {
+                        fill: 'green'
+                    }
+                },
+                series: {
+                  regions:[{
+                    attribute: 'fill'
+                  }]
+                },
+                onRegionLabelShow: function(e, el, code) {
+                    if (pingdata[code]){
+                        el.html(el.html()+'<br>'+'丢包率:'+pingdata[code]['loss']+' 延时:'+pingdata[code]['rtt']);
+                    }else{
+                        el.html(el.html());
+                    }
+                },
+                markerStyle: {
+                    initial: {
+                        fill: '#fd8888',
+                        stroke: '#fff'
+                        },
+                    hover: {
+                        fill: '#fd3838',
+                        stroke: '#fff',
+                        "fill-opacity": 0.8
+                    }
+                },
+                markers: [
+                    {latLng: [25.74, 123.47], name: '钓鱼岛是中国的固有领土！'}
+                  ]
+            });
+            var map=$('#map').vectorMap('get', 'mapObject');
+            var mycolor = [];
+            for (var node in pingdata){
+                if (pingdata[node]['type'] == '1'){
+                    mycolor[node]='#CC3300';
+                } else if(pingdata[node]['type'] == '2'){
+                    mycolor[node]='#FF9900';
+                }
+            }
+            map.series.regions[0].setValues(mycolor);
+            $('.toptips').hover(function(){
+                $('.header').show();
+                $('.toptips').hide();
+
+            });
+            $("header").mouseleave(function(){
+                $('.header').hide();
+                $('.toptips').show();
+            });
+{#           订单饼图#}
+            $('#myChart').highcharts({
+                chart: {
+                    type: 'pie',
+                    plotBackgroundColor: null,
+                    plotBorderWidth: null,
+                    plotShadow: false
+                },
+                title: {
+                    text: '最近一小时失败订单分布'
+                },
+                credits: {
+                    enabled : true,
+                    href : "#",
+                    text : "lefeng.com"
+                },
+                tooltip: {
+                    valueSuffix: '笔 占比:{point.percentage:.1f} %'
+                },
+                plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        dataLabels: {
+                            enabled: true,
+                            color: '#000000',
+                            connectorColor: '#000000',
+                            format: '<b>{point.name}</b>:{point.percentage:.1f} %'
+                        },
+                        events:{
+                            click: function(e) {
+                                if (e.point.name == '支付失败'){
+                                    $('#dailypopover').toggle();
+                            }
+                        }
+                    },
+                        showInLegend: true
+                    }
+                },
+                series: [{
+                    name: '总共',
+                    data: {{ orders | safe }}
+                }]
+            });
+            $('#myChartweek').highcharts({
+                chart: {
+                    type: 'pie',
+                    plotBackgroundColor: null,
+                    plotBorderWidth: null,
+                    plotShadow: false
+                },
+                title: {
+                    text: '最近一周失败订单分布'
+                },
+                credits: {
+                    enabled : true,
+                    href : "#",
+                    text : "lefeng.com"
+                },
+{#                tooltip: {#}
+{#                    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'#}
+{#                },#}
+                tooltip: {
+                    valueSuffix: '笔 占比:{point.percentage:.1f} %'
+                },
+                plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        dataLabels: {
+                            enabled: true,
+                            color: '#000000',
+                            connectorColor: '#000000',
+                            format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                        },
+                        events:{
+                                click: function(e) {
+                                    if (e.point.name == '支付失败'){
+                                        $('#weekpopover').toggle();
+                                }
+                            }
+                        },
+                        showInLegend: true
+                    }
+                },
+                series: [{
+                    name: '总共',
+                    data: {{ cancel_order_week_list | safe }}
+                }]
+            });
+            $('#myChartorder').highcharts({
+                title: {
+                    text: '订单趋势图',
+                    x: -20 //center
+                },
+                credits: {
+                    enabled : true,
+                    href : "#",
+                    text : "lefeng.com"
+                },
+                xAxis: {
+                    categories: {{ x_date | safe }}
+                },
+                yAxis: {
+                    title: {
+                        text: '订单量 (/笔)'
+                    },
+                    min: 0,
+                    plotLines: [{
+                        value: 0,
+                        width: 1,
+                        startOnTick: false,
+                        color: '#808080'
+                    }]
+                },
+                tooltip: {
+                    valueSuffix: '笔/小时'
+                },
+                series: [{
+                    name: '下单量',
+                    data: {{ sub_order_list | safe }}
+                }, {
+                    name: '撤单量',
+                    data: {{ cancel_order_list | safe }}
+                }]
+            });
+            $('#mytclv').highcharts({
+                title: {
+                    text: '跳出率趋势',
+                    x: -20 //center
+                },
+                credits: {
+                    enabled : true,
+                    href : "#",
+                    text : "lefeng.com"
+                },
+                xAxis: {
+                    categories: {{ x_date | safe }}
+                },
+                yAxis: {
+                    title: {
+                        text: '跳出率 (%)'
+                    },
+                    min: 0,
+                    plotLines: [{
+                        value: 0,
+                        width: 1,
+                        startOnTick: false,
+                        color: '#808080'
+                    }]
+                },
+                tooltip: {
+                    valueSuffix: '%'
+                },
+                series: {{ tclv | safe}}
+            });
+        });
+        var rl = setTimeout("window.location.reload()",60000);
+        function showiframe(link){
+            var href = link.href;
+            $("#iframe").html('<iframe name="monitor" src="'+ href +'" align="middle" width="100%"  scrolling="auto" frameborder="0"  name="monitor" height="2000px"></iframe>');
+            clearTimeout(rl);
+            return false;
+        }
+    </script>
+{% endblock %}

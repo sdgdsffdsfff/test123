@@ -1,0 +1,57 @@
+{% extends 'public/base.html' %}
+{% block header %}
+    {% include "public/header.html" %}
+{% endblock %}
+{% block page %}
+    <div class="row" style="margin-top: 5px">
+        <div class="col-md-8">
+            <label>网站概览</label>
+            <div class="navbar">
+                <button type="button" class="btn btn-info btn-sm">今天</button>
+                <button type="button" class="btn btn-info btn-sm">昨天</button>
+                <button type="button" class="btn btn-info btn-sm">最近7天</button>
+                <button type="button" class="btn btn-info btn-sm">最近30天</button><br>
+                <input type="radio" name="PV">浏览量(PV)
+                <input type="radio" name="pv">IP数
+            </div>
+        </div>
+        <div class="col-md-4">
+            <table class="table table-bordered">
+                <tr>
+                    <th>日期</th>
+                    <th>浏览量(PV)</th>
+                    <th>IP数</th>
+                </tr>
+                 <tr>
+                    <th>昨日</th>
+                    <th>11,786,749</th>
+                    <th>1,786,749</th>
+                </tr>
+                 <tr>
+                    <th>今日</th>
+                    <th>11,786,749</th>
+                    <th>1,786,749</th>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8">
+            <img src="/static/bootstrap/img/index.jpg" width="780" height="300">
+        </div>
+        <div class="col-md-4">
+            lll
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8">
+            <img src="/static/bootstrap/img/index.jpg" width="780" height="300">
+        </div>
+        <div class="col-md-4">
+            lll
+        </div>
+    </div>
+{% endblock %}
+{% block footer %}
+    {% include "public/footer.html" %}
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'public/base.html' %}
+{% block page %}
+{% load guardian_tags %}
+    <style>
+        body{
+            padding: 0;
+        }
+    </style>
+    <form  method="POST"  enctype="multipart/form-data" role="form"> {% csrf_token %}
+        <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <a type="button" class="close" href="javascript:window.close()">&times;</a>
+                <h4 class="modal-title" id="myModalLabel">添加{{ name }}</h4>
+              </div>
+              <div class="modal-body">
+                <table class="table-responsive">
+                    <tbody>
+                        {{ form.as_table }}
+                    </tbody>
+                </table>
+              </div>
+              <div class="modal-footer">
+                  <input type="submit" class="btn btn-warning" value="添加" id="Save" style="margin-left:400px">
+              </div>
+            </div><!-- /.modal-content -->
+         </div><!-- /.modal-dialog -->
+    </form>
+    <script src="/static/bootstrap/js/jquery.form.js"></script>
+{% endblock %}

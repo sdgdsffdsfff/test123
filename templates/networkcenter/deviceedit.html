@@ -1,0 +1,144 @@
+{% extends 'public/base.html' %}
+{% block page %}
+{% load guardian_tags %}
+    <style>
+        body{
+            padding: 0;
+        }
+    </style>
+    <form  id="adddevice" method="POST"  enctype="multipart/form-data" role="form"> {% csrf_token %}
+        <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <a type="button" class="close" href="javascript:window.close()">&times;</a>
+                <h4 class="modal-title" id="myModalLabel"><i class="fa fa-edit"></i> 编辑</h4>
+              </div>
+              <div class="modal-body">
+                <table class="table-responsive">
+                        <tbody>
+                            <tr><th><label for="id_device_sn">序列号:</label></th>
+                                <td>{{ form.sn }}</td>
+                                <td class="errorInfo device_sn fa fa-star auth"></td>
+                            </tr>
+                            <tr><th><label for="id_idc">机 房:</label></th>
+                                <td>{{ form.idc }}</td>
+                                <td class="idc"></td>
+                            </tr>
+                            <tr><th><label for="id_rack">机 柜:</label></th>
+                                <td>{{ form.rack }}</td>
+                                <td class="rack"></td>
+                            </tr>
+                            <tr><th><label for="id_position">U 位:</label></th>
+                                <td>{{ form.position }}</td>
+                                <td class="position"></td>
+                            </tr>
+                            <tr><th><label for="id_asset_id">资产编号:</label></th>
+                                <td>{{ form.asset_id }}</td>
+                                <td class="asset_id"></td>
+                            </tr>
+                            <tr><th><label for="id_purchase_id">采购单号:</label></th>
+                                <td>{{ form.purchase_id }}</td>
+                                <td class="purchase_id"></td>
+                            </tr>
+                            <tr><th><label for="id_buy_price">购买单价:</label></th>
+                                <td>{{ form.buy_price }}</td>
+                                <td class="buy_price"></td>
+                            </tr>
+                            <tr><th><label for="id_buy_time">购买时间:</label></th>
+                                <td>{{ form.buy_time }}</td>
+                                <td class="buy_time"></td>
+                            </tr>
+                            <tr><th><label for="id_expired_time">过保时间:</label></th>
+                                <td>{{ form.expired_time }}</td>
+                                <td class="expired_time"></td>
+                            </tr>
+                            <tr><th><label for="id_remark">备注:</label></th>
+                                <td>{{ form.remark }}</td>
+                                <td class="remark"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="form-group" style="margin-top: 10px">
+                        <label class="control-label col-md-2">选择标签:</label><span class="tag errorInfo"></span><br>
+                        {{ form.tag }}
+                    </div>
+              </div>
+              <div class="modal-footer">
+                  <a class="btn btn-primary-outline" href="javascript:window.close();" style="margin-left:400px">返回</a>
+                  <input type="submit" class="btn btn-primary-outline" value="保存" >
+              </div>
+            </div><!-- /.modal-content -->
+         </div><!-- /.modal-dialog -->
+    </form>
+    <script type="text/javascript">
+        $(function () {
+{#            function getNodeUrl(th,node, url){#}
+{#                var u = '';#}
+{#                var a = $(th).tree('getParent',node.target);#}
+{#                if (a){#}
+{#                    u = '_'+node.id;#}
+{#                    url = u+url;#}
+{#                    return getNodeUrl(th, a, url);#}
+{#                }else{#}
+{#                    url = node.id+url;#}
+{#                    return url;#}
+{#                }#}
+{#            }#}
+{#            $('#tt').tree({#}
+{#                onClick: function(node){#}
+{#                    var url = '';#}
+{#                    var a = $(this).tree('getParent',node.target);#}
+{#                    var urllist = getNodeUrl(this, node, url);#}
+{#                    alert("?node="+urllist);#}
+{#                    location.href="?node="+urllist;  // alert node text property when clicked#}
+{#                }#}
+{#            });#}
+            var options = {
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.code == 1){
+                    $('#adddevice').fadeOut();
+                    alertify.alert("修改成功");
+                    $('#alertify-ok').live("click",function(){
+{#                        window.opener.location.reload();#}
+                        window.close();
+                    });
+                }else if (data.code == 0){
+                    $(".device_sn").text(data.message['sn']);
+                    $(".idc").text(data.message['idc']);
+                    $(".rack").text(data.message['rack']);
+                    $(".position").text(data.message['position']);
+                    $(".asset_id").text(data.message['asset_id']);
+                    $(".purchase_id").text(data.message['purchase_id']);
+                    $(".buy_price").text(data.message['buy_price']);
+                    $(".buy_time").text(data.message['buy_time']);
+                    $(".buy_price").text(data.message['buy_price']);
+                    $(".expired_time").text(data.message['expired_time']);
+                    $(".remark").text(data.message['remark']);
+                    $(".auth").text(data.message['auth']);
+                    $(".tag").text(data.message['tag']);
+                }
+            }
+        };
+        // ajaxForm
+        $("#adddevice").ajaxForm(options);
+        });
+    </script>
+    <script src="/static/bootstrap/js/jquery.form.js"></script>
+    <script src="/static/bootstrap/js/jquery-ui.min.js"></script>
+    <script src="/static/bootstrap/js/jquery-ui-timepicker-addon.js"></script>
+    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/static/bootstrap/js/bootstrap-tooltip.js"></script>
+    <script src="/static/bootstrap/js/bootstrap-popover.js"></script>
+    <script src="/static/bootstrap/js/alertify.js"></script>
+    <script src="/static/bootstrap/js/jquery.cookie.js"></script>
+    <script src="/static/bootstrap/js/RelatedObjectLookups.js"></script>
+    <script src="/static/bootstrap/js/raphael.js"></script>
+    <script src="/static/bootstrap/js/chinamapPath.js"></script>
+    <script src="/static/bootstrap/js/jquery-jvectormap-1.2.2.min.js"></script>
+    <script src="/static/bootstrap/js/jquery-jvectormap-cn-merc-cn.js"></script>
+    <script src="/static/bootstrap/js/highcharts.js"></script>
+    <script src="/static/bootstrap/js/jquery.easyui.min.js"></script>
+    <script src="/static/bootstrap/js/jquery.dataTables.min.js"></script>
+    <script src="/static/bootstrap/js/assets/device.js"></script>
+{% endblock %}

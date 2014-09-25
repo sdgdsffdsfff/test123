@@ -1,0 +1,127 @@
+{% extends 'public/base.html' %}
+{% block page %}
+{% load guardian_tags %}
+    <style>
+        body{
+            padding: 0;
+        }
+    </style>
+    <form  id="adddevice" method="POST"  enctype="multipart/form-data" role="form"> {% csrf_token %}
+        <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <a type="button" class="close" href="javascript:window.close()">&times;</a>
+                <h4 class="modal-title" id="myModalLabel"><i class="fa fa-edit"></i> 编辑</h4>
+              </div>
+              <div class="modal-body">
+                <table class="table-responsive">
+                        <tbody>
+                            <tr><th><label for="id_device_sn">序列号:</label></th>
+                                <td>{{ form.sn }}</td>
+                                <td class="errorInfo device_sn fa fa-star auth"></td>
+                            </tr>
+                            <tr><th><label for="id_hostname">主机名:</label></th>
+                                <td>{{ form.hostname }}</td>
+                                <td class="hostname"></td>
+                            </tr>
+                            <tr><th><label for="id_os_type">系统类型:</label></th>
+                                <td>{{ form.os_type }}</td>
+                                <td class="os_type"></td>
+                            </tr>
+                            <tr><th><label for="id_os_kernel">内核:</label></th>
+                                <td>{{ form.os_kernel }}</td>
+                                <td class="os_kernel"></td>
+                            </tr>
+                            <tr><th><label for="id_os_release">版本:</label></th>
+                                <td>{{ form.os_release }}</td>
+                                <td class="os_release"></td>
+                            </tr>
+                            <tr><th><label for="id_ip">IP地址:</label></th>
+                                <td>{{ form.ip }}</td>
+                                <td class="ip"></td>
+                            </tr>
+                            <tr><th><label for="id_oper">运维负责人:</label></th>
+                                <td>{{ form.oper }}</td>
+                                <td class="oper"></td>
+                            </tr>
+                            <tr><th><label for="id_fronter">前端负责人:</label></th>
+                                <td>{{ form.fronter }}</td>
+                                <td class="fronter"></td>
+                            </tr>
+                            <tr><th><label for="id_dever">开发负责人:</label></th>
+                                <td>{{ form.dever }}</td>
+                                <td class="dever"></td>
+                            </tr>
+                            <tr><th>{{ form.host.label }}</th>
+                                <td>{{ form.host }}</td>
+                                <td class="host"></td>
+                            </tr>
+                            <tr><th><label for="id_is_vrt">是否虚机:</label></th>
+                                <td>{{ form.is_vrt }}</td>
+                                <td class="is_vrt"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="form-group" style="margin-top: 10px">
+                        <label class="control-label col-md-2">选择标签:</label><span class="tag errorInfo"></span><br>
+                        {{ form.tag }}
+                    </div>
+              </div>
+              <div class="modal-footer">
+                  <a class="btn btn-primary-outline" href="javascript:window.close();" style="margin-left:400px">返回</a>
+                  <input type="submit" class="btn btn-primary-outline" value="保存" >
+              </div>
+            </div><!-- /.modal-content -->
+         </div><!-- /.modal-dialog -->
+    </form>
+    <script type="text/javascript">
+        $(function () {
+            var options = {
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.code == 1){
+                    $('#adddevice').fadeOut();
+                    alertify.alert("修改成功");
+                    $('#alertify-ok').live("click",function(){
+{#                        window.opener.location.reload();#}
+                        window.close();
+                    });
+                }else if (data.code == 0){
+                    $(".device_sn").text(data.message['sn']);
+                    $(".hostname").text(data.message['hostname']);
+                    $(".os_type").text(data.message['os_type']);
+                    $(".os_kernel").text(data.message['os_kernel']);
+                    $(".os_release").text(data.message['os_release']);
+                    $(".ip").text(data.message['ip']);
+                    $(".oper").text(data.message['oper']);
+                    $(".fronter").text(data.message['fronter']);
+                    $(".dever").text(data.message['dever']);
+                    $(".host").text(data.message['host']);
+                    $(".is_vrt").text(data.message['is_vrt']);
+                    $(".auth").text(data.message['auth']);
+                    $(".tag").text(data.message['tag']);
+                }
+            }
+        };
+        // ajaxForm
+        $("#adddevice").ajaxForm(options);
+        });
+    </script>
+    <script src="/static/bootstrap/js/jquery.form.js"></script>
+    <script src="/static/bootstrap/js/jquery-ui.min.js"></script>
+    <script src="/static/bootstrap/js/jquery-ui-timepicker-addon.js"></script>
+    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/static/bootstrap/js/bootstrap-tooltip.js"></script>
+    <script src="/static/bootstrap/js/bootstrap-popover.js"></script>
+    <script src="/static/bootstrap/js/alertify.js"></script>
+    <script src="/static/bootstrap/js/jquery.cookie.js"></script>
+    <script src="/static/bootstrap/js/RelatedObjectLookups.js"></script>
+    <script src="/static/bootstrap/js/raphael.js"></script>
+    <script src="/static/bootstrap/js/chinamapPath.js"></script>
+    <script src="/static/bootstrap/js/jquery-jvectormap-1.2.2.min.js"></script>
+    <script src="/static/bootstrap/js/jquery-jvectormap-cn-merc-cn.js"></script>
+    <script src="/static/bootstrap/js/highcharts.js"></script>
+    <script src="/static/bootstrap/js/jquery.easyui.min.js"></script>
+    <script src="/static/bootstrap/js/jquery.dataTables.min.js"></script>
+    <script src="/static/bootstrap/js/assets/device.js"></script>
+{% endblock %}

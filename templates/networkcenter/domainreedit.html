@@ -1,0 +1,86 @@
+{% extends 'networkcenter/base.html' %}
+{% block content %}
+    <script>
+        $(function () {
+            var options = {
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if (data.code == 1){
+                        alertify.alert("修改成功");
+                        $('#alertify-ok').live("click",function(){
+                            window.location=document.referrer;
+                        });
+                    }else if (data.code == 0){
+                        $(".name").text(data.message['name']);
+                        $(".domain").text(data.message['domain']);
+                        $(".record_type").text(data.message['record_type']);
+                        $(".record_value").text(data.message['record_value']);
+                        $(".record_ttl").text(data.message['record_ttl']);
+                        $(".remark").text(data.message['remark']);
+                    }
+                }
+            };
+            // ajaxForm
+            $("#businessform").ajaxForm(options);
+        })
+    </script>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h3 class="panel-title">{{ idcs.name }} 记录编辑</h3>
+                </div>
+                <div class="panel-body">
+                      <form id="businessform" class="form-search" method="POST"  enctype="multipart/form-data" name="form"> {% csrf_token %}
+                          <table>
+                             <tbody>
+                                <tr>
+                                    <th><label for="id_name">主机记录:</label></th>
+                                    <td>{{ form.name }}</td>
+                                    <td class="name auth errorInfo fa fa-star"></td>
+                                </tr>
+                                <tr>
+                                    <th><label for="id_domain">域名:</label></th>
+                                    <td>{{ form.domain }}</td>
+                                     <td class="domain errorInfo"></td>
+                                </tr>
+                                <tr>
+                                    <th><label for="id_record_type">记录类型:</label></th>
+                                    <td>{{ form.record_type }}</td>
+                                     <td class="record_type errorInfo"></td>
+                                </tr>
+                                <tr>
+                                    <th><label for="id_record_value">记录值:</label></th>
+                                    <td>{{ form.record_value }}</td>
+                                     <td class="record_value errorInfo"></td>
+                                </tr>
+                                <tr>
+                                    <th><label for="id_record_ttl">TTL:</label></th>
+                                    <td>{{ form.record_ttl }}</td>
+                                     <td class="record_ttl errorInfo"></td>
+                                </tr>
+                                <tr>
+                                    <th><label for="id_remark">备注:</label></th>
+                                    <td>{{ form.remark }}</td>
+                                     <td class="remark errorInfo"></td>
+                                </tr>
+                             </tbody>
+                          </table><br>
+                          <a class="btn btn-default" href="javascript:history.go(-1);" >返回</a>
+                          <input type="submit" class="btn btn-warning" value="保存" id="Save" >
+                          <span class="errorInfo" style="color:red;margin-right:150px;"></span>
+                      </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <h3 class="panel-title">{{ idcs.name }} 统计</h3>
+                    </div>
+                    <div class="panel-body">
+                    </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

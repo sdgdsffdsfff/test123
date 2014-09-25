@@ -1,0 +1,203 @@
+{% extends 'networkcenter/base.html' %}
+{% block widget %}
+    <div class="panel panel-default" style="margin-bottom: 10px;">
+          <div class="panel-heading">
+              <i class="fa fa-globe"></i>
+              <label> 装机平台</label>
+          </div>
+          <div class="panel-body">
+              <ul class="nav nav-pills nav-stacked">
+                  <li><a  href="{% url "srvpool" %}"><i class="fa fa-bars"></i> 资源池</a></li>
+                  {% if perms.networkcenter.add_osinstallqueue %}
+                      <li><a data-toggle="modal" data-target="#adddevice"><i class="fa fa-plus-square-o"></i> 添加装机</a></li>
+                  {% endif %}
+                  <li><a href="{% url "osinstall" %}"><i class="fa fa-toggle-right"></i> 装机队列</a></li>
+                  <li><a href="{% url "osinstallcomplete" %}"><i class="fa fa-sun-o"></i> 装机完毕</a></li>
+                  <li><a href="#"><i class="fa fa-file-o"></i> 历史记录</a></li>
+              </ul>
+          </div>
+    </div>
+    <div id="adddevice" class="modal" style="display:none">
+        <form id="osinstall" method="POST"  enctype="multipart/form-data" role="form" action="{% url "osinstall" %}"> {% csrf_token %}
+            <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" >&times;</button>
+                    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-save"></i> 添加装机任务</h4>
+                  </div>
+                  <div class="modal-body">
+                    <blockquote><i class="fa fa-meh-o"></i> 按行输入要装机的SN号，生成装机列表。</blockquote>
+                    <table class="table-responsive">
+                        <tbody>
+                            <tr><th></th>
+                                <td>{{ form.sn }}</td>
+                                <td class="errorInfo device_sn fa fa-star"></td>
+                            </tr>
+                            <tr><th><label for="id_description">用途:</label></th>
+                                <td>{{ form.description }}</td>
+                                <td class="errorInfo description fa fa-star"></td>
+                            </tr>
+                            <tr><th><label for="id_needs_user">申请人:</label></th>
+                                <td>{{ form.needs_user }}</td>
+                                <td class="errorInfo needs_user fa fa-star"></td>
+                            </tr>
+                            <tr><th><label for="id_tp_type">模板:</label></th>
+                                <td>
+                                    {% for radio in form.tp_type %}
+                                        <label class="radio-inline">
+                                            {{ radio.tag }}
+                                            <span>{{ radio.choice_label }}</span>
+                                        </label>
+                                    {% endfor %}
+                                </td>
+                                <td class="idc"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                  </div>
+                  <div class="modal-footer">
+                      <span class="all errorInfo" style="margin-right:300px"></span>
+                      <input type="submit" class="btn btn-primary-outline" value="添加" style="margin-left:400px">
+                      <button type="button" class="btn btn-primary-outline" data-dismiss="modal">Close</button>
+                  </div>
+                </div><!-- /.modal-content -->
+             </div><!-- /.modal-dialog -->
+        </form>
+    </div>
+    <script type="text/javascript">
+         function osinstallrefresh(id){
+             var url = "/network/osinstalltask/refresh/" +id;
+             $.get(url, function(data){
+                 data = JSON.parse(data);
+                 if (data.code == 1){
+                     $('.alert-yes > p').html('执行成功');
+                     $('.alert-yes').show();
+                 }else{
+                     $('.alert-no > p').html('<i class="fa fa-exclamation-circle"></i> 配置不完善！，请重新配置～');
+                     $('.alert-no').show();
+                 }
+             });
+             return false;
+         }
+         function osinstallaction(id){
+             var url = '/network/osinstalltask/submit/' + id;
+             $.get(url,function(data){
+                 data = JSON.parse(data);
+                 if (data.code == 1){
+                     $('.alert-yes > p').html('执行成功');
+                     $('.alert-yes').show();
+                 }else{
+                     $('.alert-no > p').html('<i class="fa fa-exclamation-circle"></i> 执行失败～');
+                     $('.alert-no').show();
+                 }
+             });
+             return false;
+         }
+         function osinstalldeliver(id){
+             var url = '/network/osinstalltask/deliver/' + id;
+             $.get(url,function(data){
+                 data = JSON.parse(data);
+                 if (data.code == 1){
+                     $('.alert-yes > p').html('执行成功');
+                     $('.alert-yes').show();
+                 }else{
+                     $('.alert-no > p').html('<i class="fa fa-exclamation-circle"></i> 执行失败～');
+                     $('.alert-no').show();
+                 }
+             });
+             return false;
+         }
+        $(function () {
+            $('.close').click(function(){
+                 location.reload();
+             });
+            var datatables=$('#xx').dataTable({
+                "sPaginationType": "full_numbers"
+            });
+            var options = {
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if (data.code == 1){
+                        $('#adddevice').modal('hide');
+                        if (data.message['unavailable_device'  != ""]){
+                            $('.alert-yes > p').html('执行成功<p>' + data.message['unavailable_device'] + '已分配,请检测</p>');
+                        }else{
+                            $('.alert-yes > p').html('执行成功<p>' + data.message['unavailable_device']+ '</p>');
+                        }
+                        $('.alert-yes').show();
+                    }else if (data.code == 0){
+                        $(".device_sn").text(data.message['sn']);
+                        $(".needs_user").text(data.message['needs_user']);
+                        $(".rack").text(data.message['rack']);
+                        $(".description").text(data.message['description']);
+                    }
+                }
+            };
+        // ajaxForm
+        $("#osinstall").ajaxForm(options);
+        });
+    </script>
+{% endblock %}
+{% block content %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title" style="display: inline-block"><i class="fa fa-laptop"></i> 装机队列</h3>
+        </div>
+        <div class="panel-body" style="padding: 5px">
+            <div class="alert alert-success alert-yes" style="display: none">
+                  <button class="close" type="button">×</button><p></p>
+            </div>
+            <div class="alert alert-success alert-no" style="display: none">
+                  <button class="close" type="button">×</button><p></p>
+            </div>
+            <table class="table table-hover table-bordered" id="xx">
+                <thead>
+                <tr>
+                    <th>序列号</th>
+                    <th>安装系统</th>
+                    <th>iloip</th>
+                    <th>osip</th>
+                    <th>eth0 mac</th>
+                    <th>安装进度</th>
+                    <th>可否装机</th>
+                    <th>操 作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for idc in os_list %}
+                    <tr>
+                        <td>{{ idc.sn }}</td>
+                        <td>{{ idc.tp_type }}</td>
+                        <td>{{ idc.ilo_ip | default:"请配置iloip"}}</td>
+                        <td>{{ idc.os_ip | default:"请配置osip"}}</td>
+                        <td>{{ idc.eth0_mac | default:"请配置MAC"}}</td>
+                        <td>{% if idc.schedule %}
+                                <div class="progress progress-striped active">
+                                  <div class="progress-bar" style="width: {{ idc.schedule }}%"></div>
+                                </div>
+                            {% else %}
+                                <div class="progress progress-striped active">
+                                  <div class="progress-bar" style="width: 1%"></div>
+                                </div>
+                            {% endif %}
+                        </td>
+                        <td>{% if idc.install %}
+                                <span class="label label-success">可装机</span>
+                            {% else %}
+                                <p><span class="label label-danger">不可装机</span> 请设置为可装机<i class="fa fa-meh-o"></i></p>
+                            {% endif %}</td>
+                        <td>{% if not idc.install or not idc.ilo_ip or not idc.os_ip %}
+                                <a href="javascript:osinstallrefresh('{{ idc.id }}')"><button class="btn  btn-success">刷新任务</button></a>
+                            {% elif not idc.deliver %}
+                                <a href="javascript:osinstalldeliver('{{ idc.id }}')"><button class="btn  btn-success">交付</button></a>
+                            {% else %}
+                                <a href="javascript:osinstallaction('{{ idc.id }}')"><button class="btn  btn-success">安装</button></a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

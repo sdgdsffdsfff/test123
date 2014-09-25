@@ -1,0 +1,200 @@
+{% extends 'public/base.html' %}
+{% block page %}
+    <style>
+        body{padding-top: 10px;}
+    </style>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default modal-content">
+                <div class="panel-heading" style="background-color:transparent;">
+                    <label style="font-size: 15px;color: #0066CC;margin-top:3px;margin-bottom: 0;">
+                        <i class="fa fa-bar-chart-o"></i>
+                        {{ idcs.device_type }} {{ idcs.sn }} 详情
+                    </label>
+                </div>
+                <div class="panel-body">
+                    <ul class="nav nav-tabs" id="myTab">
+                      <li class="active"><a href="#home" data-toggle="tab">基本信息</a></li>
+                      <li><a href="#profile" data-toggle="tab">硬件信息</a></li>
+                      <li><a href="#messages" data-toggle="tab">资产信息</a></li>
+                    </ul>
+                    <div class="tab-content">
+                      <div class="tab-pane active" id="home">
+                          <table class="table table-hover table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th><label for="id_device_sn">设备类型:</label></th>
+                                        <td>{% for v in idcs.tag.all %}
+                                                {% if v.tag in dtp_list%}
+                                                   {{ v.remask }}
+                                                {% endif %}
+                                            {% endfor %}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th><label for="id_device_sn">序列号:</label></th>
+                                        <td>{{ idcs.sn }}</td>
+                                    </tr>
+                                    <tr><th><label for="id_brands">品牌:</label></th>
+                                        <td>{% for v in idcs.tag.all %}
+                                                {% if v.tag in vendor_list%}
+                                                   {{ v.remask }}
+                                                {% endif %}
+                                            {% endfor %}
+                                        </td>
+                                    </tr>
+                                    <tr><th><label for="id_model">型号:</label></th>
+                                        <td>{% for v in idcs.tag.all %}
+                                                {% if v.tag in prd_list%}
+                                                   {{ v.remask }}
+                                                {% endif %}
+                                            {% endfor %}
+                                        </td>
+                                    </tr>
+                                    <tr><th><label for="id_idc">机房:</label></th>
+                                        <td>{{ idcs.idc.name }}</td>
+                                    </tr>
+                                    <tr><th><label for="id_rack">机柜:</label></th>
+                                        <td>{{ idcs.rack.name }}</td>
+                                    </tr>
+                                    <tr><th><label for="id_position">U 位:</label></th>
+                                        <td>{{ idcs.position.name }}</td>
+                                    </tr>
+                                    <tr><th><label for="id_remark">备注:</label></th>
+                                        <td>{{ idcs.remark }}</td>
+                                    </tr>
+                                </tbody>
+                          </table>
+                      </div>
+                      <div class="tab-pane" id="profile">
+                            <label class="label label-primary">网卡信息:</label>
+                            <table class="table table-hover table-bordered">
+                                <tr><th><label>网卡名:</label></th><th><label>IP:</label></th>
+                                    <th><label>MAC:</label></th><th><label>Link:</label></th>
+                                    <th><label>VLAN:</label></th><th><label>状态:</label></th>
+                                    <th><label>备注:</label></th>
+                                </tr>
+                                {% for devint in idcs.devicenic_set.all %}
+                                <tr><th><label for="">{{ devint.name }}:</label></th>
+                                    <td>{{ devint.ip }}</td><td>{{ devint.mac }}</td>
+                                    <td>{{ devint.link }}</td><td>{{ devint.vlan }}</td>
+                                    <td>{% if devint.status  %}
+                                            <img src="/static/admin/img/icon-yes.gif" alt="{{ idc.status }}">已使用
+                                        {% else %}
+                                            <img src="/static/admin/img/icon-no.gif" alt="{{ idc.status }}">未使用
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ devint.remark }}</td>
+                                </tr>
+                                {% endfor %}
+                            </table>
+                            <label class="label label-primary">CPU详情:</label>
+                            <table class="table table-hover table-bordered">
+                                <tr><th><label>型号:</label></th><th><label>厂商:</label></th>
+                                    <th><label>版本:</label><th><label>所在插槽:</label></th>
+                                </tr>
+                                {% for devcpu in idcs.devicecpu_set.all %}
+                                    <tr>
+                                        <th>{{ devcpu.product }}</th>
+                                        <th>{{ devcpu.vendor }}</th>
+                                        <td>{{ devcpu.version }}</td>
+                                        <td>{{ devcpu.slot }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                            <label class="label label-primary">磁盘详情:</label>
+                            <table class="table table-hover table-bordered">
+                                <tr><th><label>磁盘序列号:</label></th><th><label>所在插槽:</label></th>
+                                    <th><label>大小:</label><th><label>转速:</label>
+                                </tr>
+                                {% for devdisk in idcs.devicedisk_set.all %}
+                                    <tr>
+                                        <th>{{ devdisk.disk_sn }}</th>
+                                        <td>{{ devdisk.slot }}</td>
+                                        <td>{{ devdisk.size }}G</td>
+                                        <td>{{ devdisk.speed }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                            <label class="label label-primary">内存详情:</label>
+                            <table class="table table-hover table-bordered">
+                                <tr><th><label>内存序列号:</label></th><th><label>厂商:</label></th>
+                                    <th><label>所在插槽:</label></th><th><label>大小:</label>
+                                </tr>
+                                {% for devmem in idcs.devicemem_set.all %}
+                                    <tr>
+                                        <th>{{ devmem.mem_sn }}</th>
+                                        <th>{{ devmem.vendor }}</th>
+                                        <td>{{ devmem.slot }}</td>
+                                        <td>{{ devmem.size }}G</td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                            <label class="label label-primary">电源详情:</label>
+                            <table class="table table-hover table-bordered">
+                                <tr><th><label>SN:</label></th><th><label>厂商:</label></th>
+                                    <th><label>版本:</label><th><label>所在插槽:</label></th>
+                                </tr>
+                                {% for devpower in idcs.devicepower_set.all %}
+                                    <tr>
+                                        <th>{{ devpower.power_sn }}</th>
+                                        <th>{{ devpower.vendor }}</th>
+                                        <td>{{ devpower.version }}</td>
+                                        <td>{{ devpower.slot }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                      </div>
+                      <div class="tab-pane" id="messages">
+                          <table class="table table-hover table-bordered">
+                                <tbody>
+                                    <tr><th><label for="id_asset_id">资产编号:</label></th>
+                                        <td>{{ idcs.asset_id }}</td>
+                                    </tr>
+                                    <tr><th><label for="id_purchase_id">采购单号:</label></th>
+                                        <td>{{ idcs.purchase_id }}</td>
+                                    </tr>
+                                    <tr><th><label for="id_buy_price">购买单价:</label></th>
+                                        <td>{{ idcs.buy_price }}</td>
+                                    </tr>
+                                    <tr><th><label for="id_buy_time">购买时间:</label></th>
+                                        <td>{{ idcs.buy_time | date:"c" }}</td>
+                                    </tr>
+                                    <tr><th><label for="id_expired_time">过保时间:</label></th>
+                                        <td>{{ idcs.expired_time | date:"c" }}</td>
+                                    </tr>
+                                    <tr><th><label for="id_supplier">供货商:</label></th>
+                                        <td>{% for v in idcs.tag.all %}
+                                                {% if v.tag in sp_list%}
+                                                   {{ v.remask }}
+                                                {% endif %}
+                                            {% endfor %}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                          </table>
+                      </div>
+                    </div>
+                    <a class="btn btn-primary-outline" style="margin-left: 90%;display: inline-block"  href="javascript:window.close()" >返回</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/static/bootstrap/js/jquery.form.js"></script>
+    <script src="/static/bootstrap/js/jquery-ui.min.js"></script>
+    <script src="/static/bootstrap/js/jquery-ui-timepicker-addon.js"></script>
+    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/static/bootstrap/js/bootstrap-tooltip.js"></script>
+    <script src="/static/bootstrap/js/bootstrap-popover.js"></script>
+    <script src="/static/bootstrap/js/alertify.js"></script>
+    <script src="/static/bootstrap/js/jquery.cookie.js"></script>
+    <script src="/static/bootstrap/js/RelatedObjectLookups.js"></script>
+    <script src="/static/bootstrap/js/raphael.js"></script>
+    <script src="/static/bootstrap/js/chinamapPath.js"></script>
+    <script src="/static/bootstrap/js/jquery-jvectormap-1.2.2.min.js"></script>
+    <script src="/static/bootstrap/js/jquery-jvectormap-cn-merc-cn.js"></script>
+    <script src="/static/bootstrap/js/highcharts.js"></script>
+    <script src="/static/bootstrap/js/jquery.easyui.min.js"></script>
+    <script src="/static/bootstrap/js/jquery.dataTables.min.js"></script>
+    <script src="/static/bootstrap/js/assets/device.js"></script>
+{% endblock %}

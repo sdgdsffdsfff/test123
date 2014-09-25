@@ -1,0 +1,76 @@
+{% extends 'systemcenter/base.html' %}
+{% block content %}
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-heading" style="height: 50px">
+               <h3 class="panel-title" style="display: inline-block"><i class="fa fa-laptop"></i> {{ srv_type }}</h3>
+            </div>
+            <div class="panel-body" style="padding: 5px">
+                <div class="panel-body">
+                    <div class="alert alert-danger alert-no" style="display: none">
+                          <button class="close" type="button">×</button><p></p>
+                    </div>
+                    <div class="alert alert-success alert-yes" style="display: none">
+                          <button class="close" type="button">×</button><p></p>
+                    </div>
+                    <table class="table table-hover table-bordered"  id="xx">
+                        <thead>
+                            <tr>
+                                <th>序列号</th>
+                                <th>主机名</th>
+                                <th>IP地址</th>
+                                <th>体检开关</th>
+                                <th>采集开关</th>
+                                <th>主机状态</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for server in host_pool %}
+                            <tr>
+                                <td><a href="{% url "serverdetail" server.id %}" onclick="return showAddAnotherPopup(this);">{{ server.sn }}</a></td>
+                                <td>{{ server.hostname | default:"请配置主机名"}}</td>
+                                <td>{{ server.ip | default:"请配置ip"}}</td>
+                                <td>{% if server.detect  %}
+                                        <img src="/static/admin/img/icon-yes.gif">已启用
+                                    {% else %}
+                                        <img src="/static/admin/img/icon-no.gif">未启用
+                                    {% endif %}
+                                </td>
+                                <td>{% if server.collect  %}
+                                        <img src="/static/admin/img/icon-yes.gif">已启用
+                                    {% else %}
+                                        <img src="/static/admin/img/icon-no.gif">未启用
+                                    {% endif %}
+                                </td>
+                                <td>{% ifequal server.status "11" %}
+                                        <img src="/static/admin/img/icon-yes.gif">运行中
+                                    {% endifequal %}
+                                    {% ifequal server.status "01" %}
+                                        <img src="/static/admin/img/icon-no.gif">维护中
+                                    {% endifequal %}
+                                </td>
+                                <td>
+                                    {% if perms.systemcenter.change_serverpool %}
+                                        {% ifequal server.status "11" %}
+                                            <a href="{% url "srvmaintain" server.id %}" onclick="return ajaxget(this);" class="btn btn-danger-outline" data-toggle="tooltip" title="主机维护"><i class="fa fa-plus-square"></i> </a>
+                                            <a href="#" class="btn btn-danger-outline" data-toggle="tooltip" title="主机重启"><i class="fa fa-power-off"></i> </a>
+                                            <a href="{% url "crtvrt" server.id %}" class="btn btn-danger-outline" onclick="return showAddAnotherPopup(this);" data-toggle="tooltip" title="创建虚机"><i class="fa fa-cloud"></i> </a>
+                                        {% endifequal %}
+                                        {% ifequal server.status "01" %}
+                                            <a href="{% url "serverup" server.id %}" class="btn btn-primary-outline" onclick="return ajaxget(this);" data-toggle="tooltip" title="主机上线"><i class="fa fa-cloud-upload"></i></a>
+                                            <a href="{% url "serveredit" server.id %}" class="btn btn-primary-outline" onclick="return showAddAnotherPopup(this);" data-toggle="tooltip" title="设备编辑"><i class="fa fa-edit"></i></a>
+                                            <a href="#" class="btn btn-primary-outline" data-toggle="tooltip" title="主机下线"><i class="fa fa-cloud-download"></i> </a>
+                                        {% endifequal%}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

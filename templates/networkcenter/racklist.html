@@ -1,0 +1,96 @@
+{% extends 'networkcenter/idcindex.html' %}
+{% block content %}
+    <div class="panel panel-default" style="margin-bottom: 10px">
+        <div class="panel-heading">
+            <h3 class="panel-title" style="display: inline-block"><i class="fa fa-th-large"></i> {{ idc.name }}</h3>
+            <div class="btn-group pull-right">
+                {% if perms.networkcenter.add_rack %}
+                    <a class="btn btn-primary-outline" data-toggle="modal" data-target="#addrack">添加机柜</a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="panel-body">
+            <table class="table table-hover table-bordered dataTable" id="racktable">
+                    <thead>
+                    <tr class="active">
+                        <th>机 柜</th>
+                        <th>所属IDC</th>
+                        <th>备 注</th>
+                        <th>设备数</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for rack in idcs %}
+                        <tr>
+                            <td>{{ rack.name }}</td>
+                            <td>{{ rack.idc }}</td>
+                            <td>{{ rack.remark}}</td>
+                            <td><a href="#">
+                                    <span class="badge">{{ rack.device_set.all.count }}</span>
+                                </a>
+                            </td>
+                            <td>
+                                {% if perms.assets.change_rack %}
+                                    <a href="{% url "rackedit" rack.id %}"  onclick="return showAddAnotherPopup(this);" data-toggle="tooltip" title="机柜编辑"><i class="fa fa-edit"></i></a>
+                                {% endif %}
+                                {% if perms.assets.delete_rack %}
+                                    <a href="#" id="{{ rack.id }}" class="del_rack" data-toggle="tooltip" title="机柜删除"><i class="fa fa-trash-o"></i></a>
+                                {% endif %}
+                                <a href="{% url "rackdetail" rack.id %}"  onclick="return showAddAnotherPopup(this);" data-toggle="tooltip" title="机柜详情"><i class="fa fa-eye"></i></a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+            </table>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(function () {
+            $(function(){
+                $('#racktable').dataTable({
+                    "sPaginationType": "full_numbers"
+                });
+            });
+            var options = {
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if (data.code == 1){
+                        $('#addrack').fadeOut();
+                        alertify.alert("添加成功");
+                        $('#alertify-ok').live("click",function(){
+                            window.location=window.location.href;
+                        });
+                    }else if (data.code == 0){
+                        $(".name").text(data.message['name']);
+                        $(".idc").text(data.message['idc']);
+                        $(".all").text(data.message['all']);
+                        $(".auth").text(data.message['auth']);
+                    }
+                }
+            };
+            // ajaxForm
+            $("#rackform").ajaxForm(options);
+            $(".del_rack").click(function(){
+                var id = this.id;
+                alertify.confirm("确定要删除?",function(e){
+                    if(e) {
+                        var url = "{% url "rackdel" id=123 %}".replace("123",id);
+                        $.get(url,function(data){
+                            data = JSON.parse(data);
+                            if (data.code == 1) {
+                                alertify.alert("删除成功");
+                                $('#'+id).parent().parent().remove();
+                            }else if(data.code == 0){
+                                alertify.alert("删除失败,"+data.message['auth']);
+                            }
+                        });
+                        return true;
+                    } else {
+                        return false;
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

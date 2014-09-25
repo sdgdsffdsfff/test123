@@ -1,0 +1,163 @@
+{% extends 'networkcenter/base.html' %}
+{% block content %}
+    <script>
+        $(function () {
+            var options = {
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if (data.code == 1){
+                        alertify.alert("修改成功");
+                        $('#alertify-ok').live("click",function(){
+                            window.location=window.location.href;
+                        });
+                    }else if (data.code == 0){
+                        $(".name").text(data.message['name']);
+                        $(".cop").text(data.message['cop']);
+                        $(".registrar").text(data.message['registrar']);
+                        $(".remark").text(data.message['remark']);
+                    }
+                }
+            };
+            // ajaxForm
+            $("#ipsectionform").ajaxForm(options);
+            $(".del_target").click(function(){
+                var id = this.id;
+                alertify.confirm("确定要删除?",function(e){
+                    if(e) {
+                        var url = "{% url "domaindel" id=123%}".replace("123",id);
+                        $.get(url,function(data){
+                            data = JSON.parse(data);
+                            if (data.code == 1) {
+                                alertify.alert("删除成功");
+                                $('#'+id).parent().parent().remove();
+                            }else if(data.code == 0){
+                                alertify.alert("删除失败,"+data.message['auth']);
+                            }
+                        });
+                        return true;
+                    } else {
+                        return false;
+                    }
+                });
+            })
+        });
+    </script>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading" style="height: 50px">
+                    <label><i class="fa fa-tachometer fa-2x"></i> 域名管理</label>
+                    <div class="btn-group pull-right">
+                        {% if perms.assets.add_domain %}
+                            <a class="btn" data-toggle="modal" href="#addipsection"><i class="icon-plus icon-white"></i>添加域名</a>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="panel-body" style="padding: 5px">
+                    <table class="table  table-hover table-bordered">
+                        <thead>
+                        <tr>
+                            <th>域 名</th>
+                            <th>公 司</th>
+                            <th>注册商</th>
+                            <th>备 注</th>
+                            <th>记录数</th>
+                            <th>操 作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for idc in idcs %}
+                            <tr>
+                                <td><a href="{% url "domainre" idc.id %}">{{ idc.name }}</a></td>
+                                <td>{{ idc.cop }}</td>
+                                <td>{{ idc.registrar }}</td>
+                                <td>{{ idc.remark }}</td>
+                                <td><span class="badge">{{ idc.domainrecord_set.all.count }}</span></td>
+                                <td>
+                                    {% if perms.assets.change_domain %}
+                                        <a href="{% url "domainedit" idc.id %}"><span class="glyphicon glyphicon-edit"></span></a> |
+                                    {% endif %}
+                                    {% if perms.assets.delete_domain %}
+                                        <a href="#" id="{{ idc.id }}" class="del_target"><span class="glyphicon glyphicon-remove"></span></a> |
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <ul class="pager">
+                          {% if idcs.has_previous %}
+                                <li> <a href="?order_type={{ order_type }}&page=1&search_var={{ search_var }}">首页</a> </li>
+                                <li> <a href="?order_type={{ order_type }}&page={{idcs.previous_page_number}}&search_var={{ search_var }}">前一页</a> </li>
+                            {% else %}
+                                <li> <a href="?order_type={{ order_type }}&page=1&search_var={{ search_var }}">首页</a> </li>
+                          {% endif %}
+                          {% if idcs.has_next %}
+                                  <li> <a href="?order_type={{ order_type }}&page={{idcs.next_page_number}}&search_var={{ search_var }}">后一页</a></li>
+                                  <li> <a href="?order_type={{ order_type }}&page={{idcs.paginator.num_pages}}&search_var={{ search_var }}">尾页</a></li>
+                              {% else %}
+                                  <li> <a href="?order_type={{ order_type }}&page={{idcs.paginator.num_pages}}&search_var={{ search_var }}">尾页</a></li>
+                          {% endif %}
+                          <li>
+                              第 {{ idcs.number }} 页, 共{{ idcs.paginator.num_pages }}页.&nbsp;&nbsp;&nbsp;跳到
+                          </li>
+                          <li>
+                              <div class="input-group" style="margin-top:-3px;margin-bottom: 0;display: inline-table">
+                                  <input type="text" class="form-control go_page" placeholder="1" style="width: 60px;">
+                                  <span class="input-group-btn" style="width: 0px;display:inline-table">
+                                    <button class="btn btn-default" id="go_page" type="button">Go</button>
+                                  </span>
+                              </div>
+                          </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="addipsection" class="modal" tabindex="-1" role="dialog" aria-labelledby=addidcLabel" aria-hidden="true">
+        <form id="ipsectionform" class="form-search" method="POST"  enctype="multipart/form-data" name="form">
+            {% csrf_token %}
+            <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">添加域名</h4>
+                  </div>
+                  <div class="modal-body">
+                        <table class="table-responsive">
+                            <tbody>
+                                <tbody>
+                                    <tr>
+                                        <th><label for="id_name">域名:</label></th>
+                                        <td>{{ form.name }}</td>
+                                        <td class="name auth errorInfo fa fa-star"></td>
+                                    </tr>
+                                    <tr>
+                                        <th><label for="id_cop">公司:</label></th>
+                                        <td>{{ form.cop }}</td>
+                                         <td class="cop errorInfo"></td>
+                                    </tr>
+                                    <tr>
+                                        <th><label for="id_registrar">注册商:</label></th>
+                                        <td>{{ form.registrar }}</td>
+                                         <td class="registrar errorInfo"></td>
+                                    </tr>
+                                    <tr>
+                                        <th><label for="id_remark">备注:</label></th>
+                                        <td>{{ form.remark }}</td>
+                                         <td class="remark errorInfo"></td>
+                                    </tr>
+                                </tbody>
+                            </tbody>
+                        </table>
+                  </div>
+                  <div class="modal-footer">
+                      <span class="errorInfo" style="color:red;margin-right:300px"></span>
+                      <input type="submit" class="btn btn-warning" value="添加" id="ipsave"  style="margin-left:400px">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+                </div><!-- /.modal-content -->
+             </div><!-- /.modal-dialog -->
+        </form>
+    </div>
+{% endblock %}

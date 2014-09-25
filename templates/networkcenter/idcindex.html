@@ -1,0 +1,301 @@
+{% extends 'networkcenter/base.html' %}
+{{% block widget %}
+    <div class="panel panel-default" style="margin-bottom: 10px;">
+          <div class="panel-heading">
+              <i class="fa fa-globe"></i>
+              <label>机房</label>
+          </div>
+          <div class="panel-body">
+              <ul class="nav nav-pills nav-stacked">
+                  {% for idc in idc_pool %}
+                    <li><a href="{% url "racklist" %}?idc={{ idc.id }}"><i class="fa fa-home"></i> {{ idc.name }}</a></li>
+                  {% endfor %}
+                  {% if perms.networkcenter.add_idc %}
+                      <li><a data-toggle="modal" data-target="#addidc"><i class="fa fa-plus-square-o"></i> 添加机房</a></li>
+                  {% endif %}
+                  {% if perms.networkcenter.add_rack %}
+                      <li><a data-toggle="modal" data-target="#addrack"><i class="fa fa-plus-square-o"></i> 添加机柜</a></li>
+                  {% endif %}
+              </ul>
+          </div>
+    </div>
+    <div class="panel panel-default" style="margin-bottom: 10px;">
+          <div class="panel-heading">
+              <i class="fa fa-globe"></i>
+              <label>IP地址</label>
+          </div>
+          <div class="panel-body">
+              <ul class="nav nav-pills nav-stacked">
+                  {% if perms.networkcenter.add_ipsection %}
+                      <li><a data-toggle="modal" data-target="#addipnet"><i class="fa fa-plus-square-o"></i> 添加子网</a></li>
+                  {% endif %}
+                  <li><a href="{% url "iplist" %}"><i class="fa fa-align-justify"></i> 所有IP地址</a></li>
+                  {% for idc in ip_net %}
+                    <li><a href="{% url "iplist" %}?ipnet={{ idc.id }}"><i class="fa fa-dribbble"></i> {{ idc.name }} ({{ idc.idc.name }})</a></li>
+                  {% endfor %}
+              </ul>
+          </div>
+    </div>
+    <div id="addrack" class="modal" style="display:none">
+        <form id="rackform" method="POST"  enctype="multipart/form-data" role="form" action="{% url "racklist" %}"> {% csrf_token %}
+            <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" >&times;</button>
+                    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-save"></i> 添加机柜</h4>
+                  </div>
+                  <div class="modal-body">
+                    <table class="table-responsive">
+                        <tbody>
+                            <tr>
+                                <th><label for="id_name">机柜:</label></th>
+                                <td>{{ rack_form.name }}</td>
+                                <td class="name auth errorInfo fa fa-star"></td>
+                            </tr>
+                            <tr>
+                                <th><label for="id_idc">所属机房:</label></th>
+                                <td>{{ rack_form.idc }}</td>
+                                <td class="idc errorInfo fa fa-star"></td>
+                            </tr>
+                            <tr>
+                                <th><label for="id_tag">标签:</label></th>
+                                <td>{{ rack_form.tag }}</td>
+                            </tr>
+                            <tr>
+                                <th><label for="id_remark">备注:</label></th>
+                                <td>{{ rack_form.remark }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                  </div>
+                  <div class="modal-footer">
+                      <span class="all errorInfo" style="margin-right:300px"></span>
+                      <input type="submit" class="btn btn-primary-outline" value="添加" style="margin-left:400px">
+                      <button type="button" class="btn btn-primary-outline" data-dismiss="modal">Close</button>
+                  </div>
+                </div><!-- /.modal-content -->
+             </div><!-- /.modal-dialog -->
+        </form>
+    </div>
+    <div id="addidc" class="modal" tabindex="-1" role="dialog" aria-labelledby=addidcLabel" aria-hidden="true">
+        <form id="idcform" class="form-search" method="POST"  enctype="multipart/form-data" name="form" action="{% url "idcindex" %}"> {% csrf_token %}
+            <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-save"></i> 添加机房</h4>
+                  </div>
+                  <div class="modal-body">
+                    <table class="table-responsive">
+                        <tbody>
+                            <tr>
+                                <th><label for="id_name">机房名:</label></th>
+                                <td>{{ idc_form.name }}</td>
+                                <td class="name auth errorInfo fa fa-star"></td>
+                            </tr>
+                            <tr>
+                                <th><label for="id_address">地址:</label></th>
+                                <td>{{ idc_form.address }}</td>
+                            </tr>
+                            <tr>
+                                <th><label for="id_phone">电话:</label></th>
+                                <td>{{ idc_form.phone }}</td>
+                            <tr>
+                                <th><label for="id_mail">邮箱:</label></th>
+                                <td>{{ idc_form.mail }}</td>
+                                <td class="mail errorInfo"></td>
+                            </tr>
+                            <tr>
+                                <th><label for="id_tag">标签:</label></th>
+                                <td>{{ idc_form.tag }}</td>
+                            </tr>
+                            <tr>
+                                <th><label for="id_remark">备注:</label></th>
+                                <td>{{ idc_form.remark }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                  </div>
+                  <div class="modal-footer">
+                      <input type="submit" class="btn btn-primary-outline" value="添加"  style="margin-left:400px">
+                      <button type="button" class="btn btn-primary-outline" data-dismiss="modal">Close</button>
+                  </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </form>
+    </div>
+    <div id="addipnet" class="modal" tabindex="-1" role="dialog" aria-labelledby=addidcLabel" aria-hidden="true">
+        <form id="ipsectionform" class="form-search" method="POST"  enctype="multipart/form-data" name="form" action="{% url "ipsection" %}">
+            {% csrf_token %}
+            <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-save"></i> 添加子网</h4>
+                  </div>
+                  <div class="modal-body">
+                        <table class="table-responsive">
+                            <tbody>
+                                <tbody>
+                                    <tr>
+                                        <th><label for="id_name">IP段:</label></th>
+                                        <td>{{ ip_net_form.name }}</td>
+                                        <td class="name auth errorInfo fa fa-star"></td>
+                                    </tr>
+                                    <tr>
+                                        <th><label for="id_idc">机房:</label></th>
+                                        <td>{{ ip_net_form.idc }}</td>
+                                         <td class="idc errorInfo"></td>
+                                    </tr>
+                                    <tr>
+                                        <th><label for="id_remark">备注:</label></th>
+                                        <td>{{ ip_net_form.remark }}</td>
+                                        <td class="remark errorInfo"></td>
+                                    </tr>
+                                    <tr><th><label for="id_category_0">IP类别:</label></th>
+                                        <td>{{ ip_net_form.category }}</td>
+                                    </tr>
+                                </tbody>
+                        </table>
+                  </div>
+                  <div class="modal-footer">
+                      <span class="errorInfo all_error" style="color:red;margin-right:300px"></span>
+                      <input type="submit" class="btn btn-primary-outline" value="添加"   style="margin-left:400px">
+                      <button type="button" class="btn btn-primary-outline" data-dismiss="modal">Close</button>
+                  </div>
+                </div><!-- /.modal-content -->
+             </div><!-- /.modal-dialog -->
+        </form>
+    </div>
+    <script type="text/javascript">
+        $(function () {
+            var options = {
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if (data.code == 1){
+                        $('#addrack').fadeOut();
+                        alertify.alert("添加成功");
+                        $('#alertify-ok').live("click",function(){
+                            window.location=window.location.href;
+                        });
+                    }else if (data.code == 0){
+                        $(".name").text(data.message['name']);
+                        $(".idc").text(data.message['idc']);
+                        $(".all").text(data.message['all']);
+                        $(".auth").text(data.message['auth']);
+                    }
+                }
+            };
+            // ajaxForm
+            $("#rackform").ajaxForm(options);
+            var idc_options = {
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if (data.code == 1){
+                        $('#addidc').fadeOut();
+                        alertify.alert("添加成功");
+                        $('#alertify-ok').live("click",function(){
+                            window.location=window.location.href;
+                        });
+                    }else if (data.code == 0){
+                        $(".name").text(data.message['name']);
+                        $(".mail").text(data.message['mail']);
+                        $(".auth").text(data.message['auth']);
+                    }
+                }
+            };
+            // ajaxForm
+            $("#idcform").ajaxForm(idc_options);
+            var ipnet_options = {
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if (data.code == 1){
+                        alertify.alert("修改成功");
+                        $('#alertify-ok').live("click",function(){
+                            window.location=window.location.href;
+                        });
+                    }else if (data.code == 0){
+                        $(".name").text(data.message['name']);
+                        $(".idc").text(data.message['idc']);
+                        $(".remark").text(data.message['remark']);
+                        $(".all_error").text(data.message['all_error']);
+                    }
+                }
+            };
+            // ajaxForm
+            $("#ipsectionform").ajaxForm(ipnet_options);
+        });
+    </script>
+{% endblock %}
+{% block content %}
+    <div class="panel panel-default" style="margin-bottom: 10px">
+        <div class="panel-heading">
+          <h3 class="panel-title"><i class="fa fa-th-large"></i> 总计</h3>
+        </div>
+        <div class="panel-body stats-container">
+            <div class="col-md-4">
+                <div class="number">
+                  <div class="icon chat-bubbles"></div>
+                    <small>{{ idc_pool.count }}</small>
+                </div>
+                <div class="text">
+                    机房数量
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="number">
+                  <div class="icon chat-bubbles"></div>
+                     <small>{{ rack_all.count }}</small>
+                </div>
+                <div class="text">
+                    机柜数量
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="number">
+                  <div class="icon chat-bubbles"></div>
+                    <small>{{ device_all.count }}</small>
+                </div>
+                <div class="text">
+                    设备数量
+                </div>
+            </div>
+        </div>
+    </div>
+    {% for idc in idc_pool %}
+        <div class="panel panel-default" style="margin-bottom: 10px">
+            <div class="panel-heading">
+              <h3 class="panel-title"><i class="fa fa-th-large"></i> {{ idc.name }}</h3>
+            </div>
+            <div class="panel-body stats-container">
+                <div class="col-md-4">
+                    <div class="number">
+                      <div class="icon chat-bubbles"></div>
+                         <small>{{ idc.rack_set.all.count }}</small>
+                    </div>
+                    <div class="text">
+                        机柜数量
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="number">
+                      <div class="icon chat-bubbles"></div>
+                        <small>{{ idc.device_set.all.count }}</small>
+                    </div>
+                    <div class="text">
+                        设备数量
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="number">
+                      <div class="icon chat-bubbles"></div>
+                        <small>{{ idc.ipadress_set.all.count }}</small>
+                    </div>
+                    <div class="text">
+                        IP数量
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

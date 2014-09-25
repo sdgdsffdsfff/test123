@@ -1,0 +1,562 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="dataSourceStorage">
+  <data-source source="LOCAL" name="Django default" product="MySQL" version="5.5.34-0ubuntu0.13.10.1" jdbc-version="4.0" driver-name="MySQL Connector Java" driver-version="mysql-connector-java-5.1.26 ( Revision: ${bzr.revision-id} )" uuid="38a8e037-b994-45b0-898b-a64a269e614c">
+    <case-sensitivity plain-identifiers="exact" quoted-identifiers="exact"/>
+    <extra-name-characters>#@</extra-name-characters>
+    <identifier-quote-string>`</identifier-quote-string>
+    <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
+    <jdbc-url>jdbc:mysql://127.0.0.1:3306/lafaso</jdbc-url>
+    <user-name>root</user-name>
+    <user-password>df9bdf98df99df9edf9fdf9c</user-password>
+    <schema-pattern>lafaso.*</schema-pattern>
+    <default-schemas>lafaso.*</default-schemas>
+    <libraries>
+      <library>
+        <url>file://$USER_HOME$/.PyCharm30/config/jdbc-drivers/mysql-connector-license.txt</url>
+      </library>
+      <library>
+        <url>jar://$USER_HOME$/.PyCharm30/config/jdbc-drivers/mysql-connector-java-5.1.26-bin.jar!/</url>
+      </library>
+    </libraries>
+    <schema name="" catalog="lafaso"/>
+    <table name="auth_group" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="name" sqlType="VARCHAR" length="80" precision="0" nullable="false" jdbcType="12"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <exported-key name="group_id_refs_id_f4b32aac" table="auth_group_permissions" schema="" catalog="lafaso" columns="group_id"/>
+      <exported-key name="group_id_refs_id_274b862c" table="auth_user_groups" schema="" catalog="lafaso" columns="group_id"/>
+      <index name="name" unique="true" columns="name"/>
+    </table>
+    <table name="auth_group_permissions" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="group_id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="permission_id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="group_id_refs_id_f4b32aac" columns="group_id" ref-table="auth_group" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="permission_id_refs_id_6ba0f519" columns="permission_id" ref-table="auth_permission" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <index name="group_id" unique="true" columns="permission_id"/>
+      <index name="auth_group_permissions_5f412f9a" unique="false" columns="group_id"/>
+      <index name="auth_group_permissions_83d7f98b" unique="false" columns="permission_id"/>
+    </table>
+    <table name="auth_permission" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="name" sqlType="VARCHAR" length="50" precision="0" nullable="false" jdbcType="12"/>
+      <column name="content_type_id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="codename" sqlType="VARCHAR" length="100" precision="0" nullable="false" jdbcType="12"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="content_type_id_refs_id_d043b34a" columns="content_type_id" ref-table="django_content_type" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <exported-key name="permission_id_refs_id_6ba0f519" table="auth_group_permissions" schema="" catalog="lafaso" columns="permission_id"/>
+      <exported-key name="permission_id_refs_id_35d9ac25" table="auth_user_user_permissions" schema="" catalog="lafaso" columns="permission_id"/>
+      <index name="content_type_id" unique="true" columns="codename"/>
+      <index name="auth_permission_37ef4eb4" unique="false" columns="content_type_id"/>
+    </table>
+    <table name="auth_user" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="password" sqlType="VARCHAR" length="128" precision="0" nullable="false" jdbcType="12"/>
+      <column name="last_login" sqlType="DATETIME" length="19" precision="0" nullable="false" jdbcType="93"/>
+      <column name="is_superuser" sqlType="BIT" length="0" precision="0" nullable="false" jdbcType="-7"/>
+      <column name="username" sqlType="VARCHAR" length="30" precision="0" nullable="false" jdbcType="12"/>
+      <column name="first_name" sqlType="VARCHAR" length="30" precision="0" nullable="false" jdbcType="12"/>
+      <column name="last_name" sqlType="VARCHAR" length="30" precision="0" nullable="false" jdbcType="12"/>
+      <column name="email" sqlType="VARCHAR" length="75" precision="0" nullable="false" jdbcType="12"/>
+      <column name="is_staff" sqlType="BIT" length="0" precision="0" nullable="false" jdbcType="-7"/>
+      <column name="is_active" sqlType="BIT" length="0" precision="0" nullable="false" jdbcType="-7"/>
+      <column name="date_joined" sqlType="DATETIME" length="19" precision="0" nullable="false" jdbcType="93"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <exported-key name="user_id_refs_id_40c41112" table="auth_user_groups" schema="" catalog="lafaso" columns="user_id"/>
+      <exported-key name="user_id_refs_id_4dc23c39" table="auth_user_user_permissions" schema="" catalog="lafaso" columns="user_id"/>
+      <exported-key name="user_id_refs_id_c0d12874" table="django_admin_log" schema="" catalog="lafaso" columns="user_id"/>
+      <exported-key name="needs_user_id_refs_id_43745e88" table="networkcenter_osinstallqueue" schema="" catalog="lafaso" columns="needs_user_id"/>
+      <exported-key name="dever_id_refs_id_47ecd748" table="systemcenter_serverpool" schema="" catalog="lafaso" columns="dever_id"/>
+      <exported-key name="fronter_id_refs_id_47ecd748" table="systemcenter_serverpool" schema="" catalog="lafaso" columns="fronter_id"/>
+      <exported-key name="oper_id_refs_id_47ecd748" table="systemcenter_serverpool" schema="" catalog="lafaso" columns="oper_id"/>
+      <index name="username" unique="true" columns="username"/>
+    </table>
+    <table name="auth_user_groups" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="user_id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="group_id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="group_id_refs_id_274b862c" columns="group_id" ref-table="auth_group" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="user_id_refs_id_40c41112" columns="user_id" ref-table="auth_user" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <index name="user_id" unique="true" columns="group_id"/>
+      <index name="auth_user_groups_5f412f9a" unique="false" columns="group_id"/>
+      <index name="auth_user_groups_6340c63c" unique="false" columns="user_id"/>
+    </table>
+    <table name="auth_user_user_permissions" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="user_id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="permission_id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="permission_id_refs_id_35d9ac25" columns="permission_id" ref-table="auth_permission" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="user_id_refs_id_4dc23c39" columns="user_id" ref-table="auth_user" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <index name="user_id" unique="true" columns="permission_id"/>
+      <index name="auth_user_user_permissions_6340c63c" unique="false" columns="user_id"/>
+      <index name="auth_user_user_permissions_83d7f98b" unique="false" columns="permission_id"/>
+    </table>
+    <table name="django_admin_log" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="action_time" sqlType="DATETIME" length="19" precision="0" nullable="false" jdbcType="93"/>
+      <column name="user_id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="content_type_id" sqlType="INT" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <column name="object_id" sqlType="LONGTEXT" length="2147483647" precision="0" nullable="true" jdbcType="-1"/>
+      <column name="object_repr" sqlType="VARCHAR" length="200" precision="0" nullable="false" jdbcType="12"/>
+      <column name="action_flag" sqlType="SMALLINT UNSIGNED" length="5" precision="0" nullable="false" jdbcType="5"/>
+      <column name="change_message" sqlType="LONGTEXT" length="2147483647" precision="0" nullable="false" jdbcType="-1"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="content_type_id_refs_id_93d2d1f8" columns="content_type_id" ref-table="django_content_type" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="user_id_refs_id_c0d12874" columns="user_id" ref-table="auth_user" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <index name="django_admin_log_37ef4eb4" unique="false" columns="content_type_id"/>
+      <index name="django_admin_log_6340c63c" unique="false" columns="user_id"/>
+    </table>
+    <table name="django_content_type" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="name" sqlType="VARCHAR" length="100" precision="0" nullable="false" jdbcType="12"/>
+      <column name="app_label" sqlType="VARCHAR" length="100" precision="0" nullable="false" jdbcType="12"/>
+      <column name="model" sqlType="VARCHAR" length="100" precision="0" nullable="false" jdbcType="12"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <exported-key name="content_type_id_refs_id_d043b34a" table="auth_permission" schema="" catalog="lafaso" columns="content_type_id"/>
+      <exported-key name="content_type_id_refs_id_93d2d1f8" table="django_admin_log" schema="" catalog="lafaso" columns="content_type_id"/>
+      <index name="app_label" unique="true" columns="app_label,model"/>
+    </table>
+    <table name="django_session" schema="" catalog="lafaso" type="TABLE">
+      <column name="session_key" sqlType="VARCHAR" length="40" precision="0" nullable="false" jdbcType="12"/>
+      <column name="session_data" sqlType="LONGTEXT" length="2147483647" precision="0" nullable="false" jdbcType="-1"/>
+      <column name="expire_date" sqlType="DATETIME" length="19" precision="0" nullable="false" jdbcType="93"/>
+      <primary-key name="PRIMARY" columns="session_key"/>
+      <index name="django_session_b7b81f0c" unique="false" columns="expire_date"/>
+    </table>
+    <table name="django_site" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="domain" sqlType="VARCHAR" length="100" precision="0" nullable="false" jdbcType="12"/>
+      <column name="name" sqlType="VARCHAR" length="50" precision="0" nullable="false" jdbcType="12"/>
+      <primary-key name="PRIMARY" columns="id"/>
+    </table>
+    <table name="monitorcenter_cactihost" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="name" sqlType="VARCHAR" length="50" precision="0" nullable="false" jdbcType="12"/>
+      <column name="host" sqlType="VARCHAR" length="511" precision="0" nullable="true" jdbcType="12"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <exported-key name="cacti_host_id_refs_id_428adbd0" table="monitorcenter_graphsgroup" schema="" catalog="lafaso" columns="cacti_host_id"/>
+      <index name="name" unique="true" columns="name"/>
+    </table>
+    <table name="monitorcenter_city" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="name" sqlType="VARCHAR" length="50" precision="0" nullable="false" jdbcType="12"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <exported-key name="city_id_refs_id_a9c796a3" table="monitorcenter_tclv" schema="" catalog="lafaso" columns="city_id"/>
+    </table>
+    <table name="monitorcenter_graphsgroup" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="name" sqlType="VARCHAR" length="50" precision="0" nullable="false" jdbcType="12"/>
+      <column name="cacti_host_id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="cacti_host_id_refs_id_428adbd0" columns="cacti_host_id" ref-table="monitorcenter_cactihost" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <exported-key name="graph_group_id_refs_id_54e00f57" table="monitorcenter_graphsid" schema="" catalog="lafaso" columns="graph_group_id"/>
+      <index name="name" unique="true" columns="name"/>
+      <index name="monitorcenter_graphsgroup_4cb06189" unique="false" columns="cacti_host_id"/>
+    </table>
+    <table name="monitorcenter_graphsid" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="graph_id" sqlType="VARCHAR" length="20" precision="0" nullable="false" jdbcType="12"/>
+      <column name="graph_group_id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="graph_group_id_refs_id_54e00f57" columns="graph_group_id" ref-table="monitorcenter_graphsgroup" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <index name="graph_id" unique="true" columns="graph_id"/>
+      <index name="monitorcenter_graphsid_4a07b061" unique="false" columns="graph_group_id"/>
+    </table>
+    <table name="monitorcenter_ordersfailnumhour" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="record_time" sqlType="DATETIME" length="19" precision="0" nullable="false" jdbcType="93"/>
+      <column name="fail_type_id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="order_num" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="fail_type_id_refs_id_3c568351" columns="fail_type_id" ref-table="monitorcenter_ordersfailtype" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <index name="monitorcenter_ordersfailnumhou_record_time_bbc288943eef329_uniq" unique="true" columns="record_time,fail_type_id"/>
+      <index name="monitorcenter_ordersfailnumhour_7f986322" unique="false" columns="fail_type_id"/>
+    </table>
+    <table name="monitorcenter_ordersfailtype" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="type_id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="remask" sqlType="VARCHAR" length="511" precision="0" nullable="true" jdbcType="12"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <exported-key name="fail_type_id_refs_id_3c568351" table="monitorcenter_ordersfailnumhour" schema="" catalog="lafaso" columns="fail_type_id"/>
+      <index name="type_id" unique="true" columns="type_id"/>
+    </table>
+    <table name="monitorcenter_shifttable" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="years" sqlType="VARCHAR" length="10" precision="0" nullable="false" jdbcType="12"/>
+      <column name="month" sqlType="VARCHAR" length="10" precision="0" nullable="false" jdbcType="12"/>
+      <column name="shift_id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <primary-key name="PRIMARY" columns="id"/>
+    </table>
+    <table name="monitorcenter_tclv" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="record_time" sqlType="DATETIME" length="19" precision="0" nullable="false" jdbcType="93"/>
+      <column name="city_id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="tclv" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="city_id_refs_id_a9c796a3" columns="city_id" ref-table="monitorcenter_city" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <index name="monitorcenter_tclv_b376980e" unique="false" columns="city_id"/>
+    </table>
+    <table name="networkcenter_device" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="sn" sqlType="VARCHAR" length="25" precision="0" nullable="false" jdbcType="12"/>
+      <column name="idc_id" sqlType="INT" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <column name="rack_id" sqlType="INT" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <column name="position_id" sqlType="INT" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <column name="asset_id" sqlType="VARCHAR" length="50" precision="0" nullable="false" jdbcType="12"/>
+      <column name="purchase_id" sqlType="VARCHAR" length="50" precision="0" nullable="false" jdbcType="12"/>
+      <column name="buy_price" sqlType="INT" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <column name="buy_time" sqlType="DATE" length="10" precision="0" nullable="true" jdbcType="91"/>
+      <column name="expired_time" sqlType="DATE" length="10" precision="0" nullable="true" jdbcType="91"/>
+      <column name="status" sqlType="BIT" length="0" precision="0" nullable="true" jdbcType="-7"/>
+      <column name="create_time" sqlType="DATE" length="10" precision="0" nullable="false" jdbcType="91"/>
+      <column name="remark" sqlType="VARCHAR" length="100" precision="0" nullable="false" jdbcType="12"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="idc_id_refs_id_ff7ae356" columns="idc_id" ref-table="networkcenter_idc" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="position_id_refs_id_66294721" columns="position_id" ref-table="networkcenter_position" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="rack_id_refs_id_958f836b" columns="rack_id" ref-table="networkcenter_rack" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <exported-key name="device_id_refs_id_fb430c71" table="networkcenter_device_tag" schema="" catalog="lafaso" columns="device_id"/>
+      <exported-key name="device_id_refs_id_28c92844" table="networkcenter_devicecpu" schema="" catalog="lafaso" columns="device_id"/>
+      <exported-key name="device_id_refs_id_c4ca0538" table="networkcenter_devicedisk" schema="" catalog="lafaso" columns="device_id"/>
+      <exported-key name="device_id_refs_id_1fcf0929" table="networkcenter_devicemem" schema="" catalog="lafaso" columns="device_id"/>
+      <exported-key name="device_id_refs_id_cdedd214" table="networkcenter_devicenic" schema="" catalog="lafaso" columns="device_id"/>
+      <exported-key name="device_id_refs_id_838a4292" table="networkcenter_devicepower" schema="" catalog="lafaso" columns="device_id"/>
+      <index name="sn" unique="true" columns="sn"/>
+      <index name="networkcenter_device_179f8fb9" unique="false" columns="rack_id"/>
+      <index name="networkcenter_device_7f604875" unique="false" columns="idc_id"/>
+    </table>
+    <table name="networkcenter_device_tag" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="device_id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="devicetag_id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="devicetag_id_refs_id_9e829ba8" columns="devicetag_id" ref-table="networkcenter_devicetag" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="device_id_refs_id_fb430c71" columns="device_id" ref-table="networkcenter_device" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <index name="networkcenter_device_tag_device_id_657001a8d6f73092_uniq" unique="true" columns="device_id,devicetag_id"/>
+      <index name="networkcenter_device_tag_05e9ad4d" unique="false" columns="devicetag_id"/>
+      <index name="networkcenter_device_tag_b6860804" unique="false" columns="device_id"/>
+    </table>
+    <table name="networkcenter_devicecpu" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="device_id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="product" sqlType="VARCHAR" length="50" precision="0" nullable="false" jdbcType="12"/>
+      <column name="vendor" sqlType="VARCHAR" length="50" precision="0" nullable="false" jdbcType="12"/>
+      <column name="version" sqlType="VARCHAR" length="50" precision="0" nullable="false" jdbcType="12"/>
+      <column name="slot" sqlType="VARCHAR" length="50" precision="0" nullable="false" jdbcType="12"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="device_id_refs_id_28c92844" columns="device_id" ref-table="networkcenter_device" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <index name="networkcenter_devicecpu_b6860804" unique="false" columns="device_id"/>
+    </table>
+    <table name="networkcenter_devicedisk" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="device_id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="disk_sn" sqlType="VARCHAR" length="50" precision="0" nullable="false" jdbcType="12"/>
+      <column name="vendor" sqlType="VARCHAR" length="50" precision="0" nullable="false" jdbcType="12"/>
+      <column name="version" sqlType="VARCHAR" length="50" precision="0" nullable="false" jdbcType="12"/>
+      <column name="slot" sqlType="VARCHAR" length="10" precision="0" nullable="false" jdbcType="12"/>
+      <column name="speed" sqlType="VARCHAR" length="10" precision="0" nullable="false" jdbcType="12"/>
+      <column name="size" sqlType="VARCHAR" length="10" precision="0" nullable="false" jdbcType="12"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="device_id_refs_id_c4ca0538" columns="device_id" ref-table="networkcenter_device" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <index name="networkcenter_devicedisk_b6860804" unique="false" columns="device_id"/>
+    </table>
+    <table name="networkcenter_devicelevel" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="level" sqlType="VARCHAR" length="10" precision="0" nullable="false" jdbcType="12"/>
+      <column name="remask" sqlType="VARCHAR" length="100" precision="0" nullable="false" jdbcType="12"/>
+      <column name="is_need" sqlType="BIT" length="0" precision="0" nullable="true" jdbcType="-7"/>
+      <column name="is_relation" sqlType="BIT" length="0" precision="0" nullable="true" jdbcType="-7"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <exported-key name="level_id_refs_id_de975f08" table="networkcenter_devicetag" schema="" catalog="lafaso" columns="level_id"/>
+      <index name="level" unique="true" columns="level"/>
+    </table>
+    <table name="networkcenter_devicemem" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="device_id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="vendor" sqlType="VARCHAR" length="50" precision="0" nullable="false" jdbcType="12"/>
+      <column name="version" sqlType="VARCHAR" length="50" precision="0" nullable="false" jdbcType="12"/>
+      <column name="slot" sqlType="VARCHAR" length="10" precision="0" nullable="false" jdbcType="12"/>
+      <column name="size" sqlType="VARCHAR" length="10" precision="0" nullable="false" jdbcType="12"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="device_id_refs_id_1fcf0929" columns="device_id" ref-table="networkcenter_device" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <index name="networkcenter_devicemem_b6860804" unique="false" columns="device_id"/>
+    </table>
+    <table name="networkcenter_devicenic" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="device_id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="name" sqlType="VARCHAR" length="30" precision="0" nullable="false" jdbcType="12"/>
+      <column name="product" sqlType="VARCHAR" length="50" precision="0" nullable="false" jdbcType="12"/>
+      <column name="vendor" sqlType="VARCHAR" length="50" precision="0" nullable="false" jdbcType="12"/>
+      <column name="mac" sqlType="VARCHAR" length="50" precision="0" nullable="false" jdbcType="12"/>
+      <column name="speed" sqlType="VARCHAR" length="50" precision="0" nullable="false" jdbcType="12"/>
+      <column name="ip_id" sqlType="INT" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <column name="vlan" sqlType="VARCHAR" length="10" precision="0" nullable="false" jdbcType="12"/>
+      <column name="link_id" sqlType="INT" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <column name="status" sqlType="BIT" length="0" precision="0" nullable="true" jdbcType="-7"/>
+      <column name="remark" sqlType="VARCHAR" length="100" precision="0" nullable="false" jdbcType="12"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="device_id_refs_id_cdedd214" columns="device_id" ref-table="networkcenter_device" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="ip_id_refs_id_6a1c476a" columns="ip_id" ref-table="networkcenter_ipadress" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="link_id_refs_id_886c7004" columns="link_id" ref-table="networkcenter_devicenic" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <exported-key name="link_id_refs_id_886c7004" table="networkcenter_devicenic" schema="" catalog="lafaso" columns="link_id"/>
+      <index name="networkcenter_devicenic_name_9f7d4be30d43f7d_uniq" unique="true" columns="name,device_id"/>
+      <index name="networkcenter_devicenic_b6860804" unique="false" columns="device_id"/>
+    </table>
+    <table name="networkcenter_devicepower" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="device_id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="power_sn" sqlType="VARCHAR" length="50" precision="0" nullable="false" jdbcType="12"/>
+      <column name="vendor" sqlType="VARCHAR" length="50" precision="0" nullable="false" jdbcType="12"/>
+      <column name="version" sqlType="VARCHAR" length="50" precision="0" nullable="false" jdbcType="12"/>
+      <column name="slot" sqlType="VARCHAR" length="10" precision="0" nullable="false" jdbcType="12"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="device_id_refs_id_838a4292" columns="device_id" ref-table="networkcenter_device" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <index name="networkcenter_devicepower_b6860804" unique="false" columns="device_id"/>
+    </table>
+    <table name="networkcenter_devicetag" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="tag" sqlType="VARCHAR" length="20" precision="0" nullable="false" jdbcType="12"/>
+      <column name="remask" sqlType="VARCHAR" length="100" precision="0" nullable="false" jdbcType="12"/>
+      <column name="level_id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="level_id_refs_id_de975f08" columns="level_id" ref-table="networkcenter_devicelevel" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <exported-key name="devicetag_id_refs_id_9e829ba8" table="networkcenter_device_tag" schema="" catalog="lafaso" columns="devicetag_id"/>
+      <index name="networkcenter_devicetag_tag_74581fdd4e244cbc_uniq" unique="true" columns="tag,level_id"/>
+      <index name="networkcenter_devicetag_b8f3f94a" unique="false" columns="level_id"/>
+    </table>
+    <table name="networkcenter_domain" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="name" sqlType="VARCHAR" length="100" precision="0" nullable="false" jdbcType="12"/>
+      <column name="registrar" sqlType="VARCHAR" length="50" precision="0" nullable="true" jdbcType="12"/>
+      <column name="remark" sqlType="VARCHAR" length="100" precision="0" nullable="false" jdbcType="12"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <exported-key name="domain_id_refs_id_5a5a20eb" table="networkcenter_domainrecord" schema="" catalog="lafaso" columns="domain_id"/>
+      <index name="name" unique="true" columns="name"/>
+    </table>
+    <table name="networkcenter_domainrecord" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="name" sqlType="VARCHAR" length="100" precision="0" nullable="false" jdbcType="12"/>
+      <column name="domain_id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="record_type" sqlType="VARCHAR" length="20" precision="0" nullable="false" jdbcType="12"/>
+      <column name="record_value" sqlType="VARCHAR" length="100" precision="0" nullable="false" jdbcType="12"/>
+      <column name="record_ttl" sqlType="VARCHAR" length="10" precision="0" nullable="false" jdbcType="12"/>
+      <column name="remark" sqlType="VARCHAR" length="100" precision="0" nullable="false" jdbcType="12"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="domain_id_refs_id_5a5a20eb" columns="domain_id" ref-table="networkcenter_domain" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <index name="networkcenter_domainrecord_e8b327e7" unique="false" columns="domain_id"/>
+    </table>
+    <table name="networkcenter_idc" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="name" sqlType="VARCHAR" length="50" precision="0" nullable="false" jdbcType="12"/>
+      <column name="address" sqlType="VARCHAR" length="100" precision="0" nullable="false" jdbcType="12"/>
+      <column name="phone" sqlType="VARCHAR" length="50" precision="0" nullable="false" jdbcType="12"/>
+      <column name="mail" sqlType="VARCHAR" length="50" precision="0" nullable="false" jdbcType="12"/>
+      <column name="create_time" sqlType="DATE" length="10" precision="0" nullable="false" jdbcType="91"/>
+      <column name="tag" sqlType="VARCHAR" length="10" precision="0" nullable="false" jdbcType="12"/>
+      <column name="remark" sqlType="VARCHAR" length="100" precision="0" nullable="false" jdbcType="12"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <exported-key name="idc_id_refs_id_ff7ae356" table="networkcenter_device" schema="" catalog="lafaso" columns="idc_id"/>
+      <exported-key name="idc_id_refs_id_bc8ec79f" table="networkcenter_ipadress" schema="" catalog="lafaso" columns="idc_id"/>
+      <exported-key name="idc_id_refs_id_9e1f741e" table="networkcenter_ipsection" schema="" catalog="lafaso" columns="idc_id"/>
+      <exported-key name="idc_id_refs_id_f9dc9ba7" table="networkcenter_rack" schema="" catalog="lafaso" columns="idc_id"/>
+      <index name="name" unique="true" columns="name"/>
+    </table>
+    <table name="networkcenter_ipadress" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="name" sqlType="CHAR" length="15" precision="0" nullable="false" jdbcType="1"/>
+      <column name="section_id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="idc_id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="category" sqlType="VARCHAR" length="20" precision="0" nullable="false" jdbcType="12"/>
+      <column name="remark" sqlType="VARCHAR" length="100" precision="0" nullable="false" jdbcType="12"/>
+      <column name="create_time" sqlType="DATE" length="10" precision="0" nullable="false" jdbcType="91"/>
+      <column name="status" sqlType="BIT" length="0" precision="0" nullable="true" jdbcType="-7"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="idc_id_refs_id_bc8ec79f" columns="idc_id" ref-table="networkcenter_idc" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="section_id_refs_id_71e0c12c" columns="section_id" ref-table="networkcenter_ipsection" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <exported-key name="ip_id_refs_id_6a1c476a" table="networkcenter_devicenic" schema="" catalog="lafaso" columns="ip_id"/>
+      <index name="networkcenter_ipadress_name_7d1ae853ba44a883_uniq" unique="true" columns="name,section_id"/>
+      <index name="networkcenter_ipadress_7f604875" unique="false" columns="idc_id"/>
+      <index name="networkcenter_ipadress_b402b60b" unique="false" columns="section_id"/>
+    </table>
+    <table name="networkcenter_ipsection" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="name" sqlType="VARCHAR" length="50" precision="0" nullable="false" jdbcType="12"/>
+      <column name="idc_id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="remark" sqlType="VARCHAR" length="100" precision="0" nullable="false" jdbcType="12"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="idc_id_refs_id_9e1f741e" columns="idc_id" ref-table="networkcenter_idc" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <exported-key name="section_id_refs_id_71e0c12c" table="networkcenter_ipadress" schema="" catalog="lafaso" columns="section_id"/>
+      <index name="networkcenter_ipsection_name_27516031dc902172_uniq" unique="true" columns="name,idc_id"/>
+      <index name="networkcenter_ipsection_7f604875" unique="false" columns="idc_id"/>
+    </table>
+    <table name="networkcenter_osinstallqueue" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="sn" sqlType="VARCHAR" length="25" precision="0" nullable="false" jdbcType="12"/>
+      <column name="status" sqlType="VARCHAR" length="10" precision="0" nullable="false" jdbcType="12"/>
+      <column name="schedule" sqlType="VARCHAR" length="10" precision="0" nullable="false" jdbcType="12"/>
+      <column name="ctime" sqlType="DATETIME" length="19" precision="0" nullable="false" jdbcType="93"/>
+      <column name="tp_type" sqlType="VARCHAR" length="20" precision="0" nullable="false" jdbcType="12"/>
+      <column name="install" sqlType="BIT" length="0" precision="0" nullable="true" jdbcType="-7"/>
+      <column name="create_user" sqlType="VARCHAR" length="10" precision="0" nullable="false" jdbcType="12"/>
+      <column name="ilo_ip" sqlType="VARCHAR" length="50" precision="0" nullable="false" jdbcType="12"/>
+      <column name="os_ip" sqlType="VARCHAR" length="50" precision="0" nullable="false" jdbcType="12"/>
+      <column name="deliver" sqlType="BIT" length="0" precision="0" nullable="true" jdbcType="-7"/>
+      <column name="eth0_mac" sqlType="VARCHAR" length="50" precision="0" nullable="false" jdbcType="12"/>
+      <column name="needs_user_id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="batch_id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="needs_user_id_refs_id_43745e88" columns="needs_user_id" ref-table="auth_user" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="batch_id_refs_id_b658014a" columns="batch_id" ref-table="networkcenter_osinstalltask" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <index name="networkcenter_osinstallqueue_12927864" unique="false" columns="batch_id"/>
+      <index name="networkcenter_osinstallqueue_ca1fe794" unique="false" columns="needs_user_id"/>
+    </table>
+    <table name="networkcenter_osinstalltask" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="batch_name" sqlType="VARCHAR" length="50" precision="0" nullable="false" jdbcType="12"/>
+      <column name="description" sqlType="VARCHAR" length="100" precision="0" nullable="false" jdbcType="12"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <exported-key name="batch_id_refs_id_b658014a" table="networkcenter_osinstallqueue" schema="" catalog="lafaso" columns="batch_id"/>
+    </table>
+    <table name="networkcenter_position" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="name" sqlType="VARCHAR" length="10" precision="0" nullable="false" jdbcType="12"/>
+      <column name="rack_id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="tag" sqlType="VARCHAR" length="10" precision="0" nullable="false" jdbcType="12"/>
+      <column name="remark" sqlType="VARCHAR" length="100" precision="0" nullable="false" jdbcType="12"/>
+      <column name="status" sqlType="BIT" length="0" precision="0" nullable="true" jdbcType="-7"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="rack_id_refs_id_65021aef" columns="rack_id" ref-table="networkcenter_rack" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <exported-key name="position_id_refs_id_66294721" table="networkcenter_device" schema="" catalog="lafaso" columns="position_id"/>
+      <index name="networkcenter_position_name_795fa270e5c30eea_uniq" unique="true" columns="name,rack_id"/>
+      <index name="networkcenter_position_179f8fb9" unique="false" columns="rack_id"/>
+    </table>
+    <table name="networkcenter_rack" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="name" sqlType="VARCHAR" length="50" precision="0" nullable="false" jdbcType="12"/>
+      <column name="idc_id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="create_time" sqlType="DATE" length="10" precision="0" nullable="false" jdbcType="91"/>
+      <column name="tag" sqlType="VARCHAR" length="10" precision="0" nullable="false" jdbcType="12"/>
+      <column name="remark" sqlType="VARCHAR" length="100" precision="0" nullable="false" jdbcType="12"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="idc_id_refs_id_f9dc9ba7" columns="idc_id" ref-table="networkcenter_idc" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <exported-key name="rack_id_refs_id_958f836b" table="networkcenter_device" schema="" catalog="lafaso" columns="rack_id"/>
+      <exported-key name="rack_id_refs_id_65021aef" table="networkcenter_position" schema="" catalog="lafaso" columns="rack_id"/>
+      <index name="networkcenter_rack_name_5e62032ff53d0f72_uniq" unique="true" columns="name,idc_id"/>
+      <index name="networkcenter_rack_7f604875" unique="false" columns="idc_id"/>
+    </table>
+    <table name="south_migrationhistory" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="app_name" sqlType="VARCHAR" length="255" precision="0" nullable="false" jdbcType="12"/>
+      <column name="migration" sqlType="VARCHAR" length="255" precision="0" nullable="false" jdbcType="12"/>
+      <column name="applied" sqlType="DATETIME" length="19" precision="0" nullable="false" jdbcType="93"/>
+      <primary-key name="PRIMARY" columns="id"/>
+    </table>
+    <table name="systemcenter_servermonitor" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="server_id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="graph_id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="server_id_refs_id_7afc4e10" columns="server_id" ref-table="systemcenter_serverpool" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <index name="systemcenter_servermonitor_2f18fe12" unique="false" columns="server_id"/>
+    </table>
+    <table name="systemcenter_serverpool" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="sn" sqlType="VARCHAR" length="25" precision="0" nullable="false" jdbcType="12"/>
+      <column name="hostname" sqlType="VARCHAR" length="100" precision="0" nullable="false" jdbcType="12"/>
+      <column name="os_type" sqlType="VARCHAR" length="100" precision="0" nullable="false" jdbcType="12"/>
+      <column name="os_kernel" sqlType="VARCHAR" length="100" precision="0" nullable="false" jdbcType="12"/>
+      <column name="os_release" sqlType="VARCHAR" length="100" precision="0" nullable="false" jdbcType="12"/>
+      <column name="oper_id" sqlType="INT" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <column name="fronter_id" sqlType="INT" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <column name="dever_id" sqlType="INT" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <column name="host_id" sqlType="INT" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <column name="status" sqlType="VARCHAR" length="10" precision="0" nullable="false" jdbcType="12"/>
+      <column name="install" sqlType="BIT" length="0" precision="0" nullable="true" jdbcType="-7"/>
+      <column name="detect" sqlType="BIT" length="0" precision="0" nullable="true" jdbcType="-7"/>
+      <column name="collect" sqlType="BIT" length="0" precision="0" nullable="true" jdbcType="-7"/>
+      <column name="is_vrt" sqlType="BIT" length="0" precision="0" nullable="true" jdbcType="-7"/>
+      <column name="ip" sqlType="VARCHAR" length="100" precision="0" nullable="false" jdbcType="12"/>
+      <column name="description" sqlType="VARCHAR" length="50" precision="0" nullable="false" jdbcType="12"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="dever_id_refs_id_47ecd748" columns="dever_id" ref-table="auth_user" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="fronter_id_refs_id_47ecd748" columns="fronter_id" ref-table="auth_user" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="host_id_refs_id_e941df5f" columns="host_id" ref-table="systemcenter_serverpool" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="oper_id_refs_id_47ecd748" columns="oper_id" ref-table="auth_user" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <exported-key name="server_id_refs_id_7afc4e10" table="systemcenter_servermonitor" schema="" catalog="lafaso" columns="server_id"/>
+      <exported-key name="host_id_refs_id_e941df5f" table="systemcenter_serverpool" schema="" catalog="lafaso" columns="host_id"/>
+      <exported-key name="serverpool_id_refs_id_23107407" table="systemcenter_serverpool_tag" schema="" catalog="lafaso" columns="serverpool_id"/>
+      <exported-key name="server_id_refs_id_28c563e1" table="systemcenter_serversla" schema="" catalog="lafaso" columns="server_id"/>
+      <exported-key name="server_id_refs_id_1a607ff0" table="systemcenter_serversoftversion" schema="" catalog="lafaso" columns="server_id"/>
+      <index name="sn" unique="true" columns="sn"/>
+      <index name="systemcenter_serverpool_27f00f5d" unique="false" columns="host_id"/>
+      <index name="systemcenter_serverpool_49a014df" unique="false" columns="dever_id"/>
+      <index name="systemcenter_serverpool_629ed9ec" unique="false" columns="fronter_id"/>
+      <index name="systemcenter_serverpool_8230c0de" unique="false" columns="oper_id"/>
+    </table>
+    <table name="systemcenter_serverpool_tag" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="serverpool_id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="systemtag_id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="serverpool_id_refs_id_23107407" columns="serverpool_id" ref-table="systemcenter_serverpool" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="systemtag_id_refs_id_ab47cf91" columns="systemtag_id" ref-table="systemcenter_systemtag" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <index name="systemcenter_serverpool_tag_serverpool_id_249fd06ecc3fb177_uniq" unique="true" columns="serverpool_id,systemtag_id"/>
+      <index name="systemcenter_serverpool_tag_5bce4059" unique="false" columns="systemtag_id"/>
+      <index name="systemcenter_serverpool_tag_e00c0590" unique="false" columns="serverpool_id"/>
+    </table>
+    <table name="systemcenter_serversla" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="server_id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="down_sum" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="down_time" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="creat_time" sqlType="DATETIME" length="19" precision="0" nullable="false" jdbcType="93"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="server_id_refs_id_28c563e1" columns="server_id" ref-table="systemcenter_serverpool" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <index name="systemcenter_serversla_2f18fe12" unique="false" columns="server_id"/>
+    </table>
+    <table name="systemcenter_serversoftversion" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="server_id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="software_id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="current_use_releases" sqlType="VARCHAR" length="25" precision="0" nullable="false" jdbcType="12"/>
+      <column name="install_path" sqlType="VARCHAR" length="100" precision="0" nullable="false" jdbcType="12"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="server_id_refs_id_1a607ff0" columns="server_id" ref-table="systemcenter_serverpool" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="software_id_refs_id_daecfa91" columns="software_id" ref-table="systemcenter_software" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <index name="systemcenter_serversoftversion_2f18fe12" unique="false" columns="server_id"/>
+      <index name="systemcenter_serversoftversion_625da001" unique="false" columns="software_id"/>
+    </table>
+    <table name="systemcenter_software" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="name" sqlType="VARCHAR" length="25" precision="0" nullable="false" jdbcType="12"/>
+      <column name="last_releases" sqlType="VARCHAR" length="25" precision="0" nullable="false" jdbcType="12"/>
+      <column name="remask" sqlType="VARCHAR" length="100" precision="0" nullable="false" jdbcType="12"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <exported-key name="software_id_refs_id_daecfa91" table="systemcenter_serversoftversion" schema="" catalog="lafaso" columns="software_id"/>
+      <index name="name" unique="true" columns="name"/>
+    </table>
+    <table name="systemcenter_systemlevel" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="level" sqlType="VARCHAR" length="10" precision="0" nullable="false" jdbcType="12"/>
+      <column name="remask" sqlType="VARCHAR" length="100" precision="0" nullable="false" jdbcType="12"/>
+      <column name="is_need" sqlType="BIT" length="0" precision="0" nullable="true" jdbcType="-7"/>
+      <column name="is_relation" sqlType="BIT" length="0" precision="0" nullable="true" jdbcType="-7"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <exported-key name="level_id_refs_id_981dbd4c" table="systemcenter_systemtag" schema="" catalog="lafaso" columns="level_id"/>
+      <index name="level" unique="true" columns="level"/>
+    </table>
+    <table name="systemcenter_systemtag" schema="" catalog="lafaso" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="tag" sqlType="VARCHAR" length="20" precision="0" nullable="false" jdbcType="12"/>
+      <column name="remask" sqlType="VARCHAR" length="100" precision="0" nullable="false" jdbcType="12"/>
+      <column name="level_id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="level_id_refs_id_981dbd4c" columns="level_id" ref-table="systemcenter_systemlevel" ref-schema="" ref-catalog="lafaso" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <exported-key name="systemtag_id_refs_id_ab47cf91" table="systemcenter_serverpool_tag" schema="" catalog="lafaso" columns="systemtag_id"/>
+      <index name="systemcenter_systemtag_tag_33e40ddeddf0f8a1_uniq" unique="true" columns="tag,level_id"/>
+      <index name="systemcenter_systemtag_b8f3f94a" unique="false" columns="level_id"/>
+    </table>
+  </data-source>
+</component>

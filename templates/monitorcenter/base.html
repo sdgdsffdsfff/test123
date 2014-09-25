@@ -1,0 +1,72 @@
+{% extends 'public/base.html' %}
+{% block header %}
+    <style>
+        body{padding-top:80px}
+        .panel-body{padding: 0;}
+        .col-md-6 img{border:none;width: 100%;height:280px;}
+        .col-md-4 img{border:none;width: 100%;height:280px;}
+        .col-md-5 img{border:none;width: 100%;height:280px;}
+        .col-md-12 .navbar {min-height: 10px;margin-bottom: 10px;border: 1px solid #bce8f1;}
+        .col-md-12 {padding-left: 1px;padding-right: 1px;padding-bottom: 1px;}
+        .col-md-4 {padding-left: 1px;padding-right: 1px;padding-bottom: 1px;}
+        .col-md-5 {padding-left: 1px;padding-right: 1px;padding-bottom: 1px;}
+        .col-md-6 {padding-left: 1px;padding-right: 1px;padding-bottom: 1px;}
+        .col-md-7 {padding-left: 1px;padding-right: 1px;padding-bottom: 1px;}
+        .col-md-8 {padding-left: 1px;padding-right: 1px;padding-bottom: 1px;width: 59.66666666666666%;}
+        .panel-heading {padding: 6px 15px;border-radius: 15px 15px 0 0;}
+
+        {#    .carousel-control {color: #EB8B78;}#}
+        {#    .carousel-indicators li{border: 1px solid #EB8B78;}#}
+        {#    .carousel-indicators .active {background-color:#EB8B78;}#}
+    </style>
+    <header class="container navbar-fixed-top" role="banner">
+        <a href="/" class="navbar-brand"><img src="/static/bootstrap/img/logo_test.png" ></a>
+        <ul class="nav navbar-nav">
+            <li><a href="{% url "monitorindex" %}">蜂巢监控中心</a></li>
+            <li class="website "><a href="#">网站数据</a></li>
+            <li class="system"><a href="{% url "monitorsystemindex" %}">系统监控</a></li>
+            <li class="network"><a href="{% url "monitornetworkindex" %}">网络监控</a></li>
+            <li class="db"><a href="{% url "monitordbindex" %}">数据库监控</a></li>
+            <li class="zhiban"><a href="{% url "monitorzhiban" %}">值班表</a></li>
+        </ul>
+        <div class="btn-group" style="margin-top: 18px;">
+              <button class="btn btn-primary-outline dropdown-toggle" data-toggle="dropdown">子监控系统<span class="caret"></span></button>
+              <ul class="dropdown-menu">
+                    <li><a href="http://192.168.16.200/cacti/index.php" onclick="return showiframe(this);">系统_Cacti</a></li>
+                    <li><a href="http://10.88.1.77/sjhlcacti/" onclick="return showiframe(this);">世纪互联_Cacti</a></li>
+                    <li><a href="http://monitor.lefeng.com/nagios" onclick="return showiframe(this);">光环新网_Nagios</a></li>
+                    <li><a href="http://10.88.1.139/nagios/" onclick="return showiframe(this);">世纪互联_Nagios</a></li>
+                    <li><a href="http://192.168.7.93/netcacti/" onclick="return showiframe(this);">网络_Cacti</a></li>
+                    <li><a href="http://monitor.lefeng.com/cacti/index.php" onclick="return showiframe(this);">数据库_Cacti</a></li>
+                    <li><a href="http://192.168.3.137/smokeping/smokeping.cgi" onclick="return showiframe(this);">光环新网Somkeping</a></li>
+                    <li><a href="http://10.88.1.77/smokeping/smokeping.cgi" onclick="return showiframe(this);">世纪互联Somkeping</a></li>
+                    <li><a href="http://192.168.0.223/" onclick="return showiframe(this);">内网监控系统</a></li>
+              </ul>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                <a href="{% url "profile" %}" class="btn btn-xs">欢迎～
+                    <span class="glyphicon glyphicon-user"></span> {{ user.first_name }}
+                </a>
+            </li>
+            <li>
+                <a href="{%url "logout"%}" class="btn btn-xs">
+                    <span class="glyphicon glyphicon-off"></span> 退出
+                </a>
+            </li>
+        </ul>
+        <script>
+            function showiframe(link){
+                var href = link.href;
+                $("#iframe").html('<iframe name="monitor" src="'+ href +'" align="middle" width="100%"  scrolling="auto" frameborder="0"  name="monitor" height="2000px"></iframe>');
+                return false;
+            }
+        </script>
+    </header>
+{% endblock %}
+{% block page %}
+
+{% endblock %}
+{% block footer %}
+    {% include "public/footer.html" %}
+{% endblock %}

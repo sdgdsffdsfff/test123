@@ -1,0 +1,70 @@
+{% extends 'networkcenter/base.html' %}
+{% block content %}
+    <script>
+        $(function () {
+                var options = {
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        if (data.code == 1){
+                            alertify.alert("修改成功");
+                            $('#alertify-ok').live("click",function(){
+                                window.location=window.location.href;
+                            });
+                        }else if (data.code == 0){
+                            $(".name").text(data.message['name']);
+                            $(".idc").text(data.message['idc']);
+                            $(".remark").text(data.message['remark']);
+                        }
+                    }
+                };
+                // ajaxForm
+                $("#ipsectionform").ajaxForm(options);
+        });
+    </script>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <label><i class="fa fa-tachometer fa-2x"></i>IP段编辑</label>
+                </div>
+                <div class="panel-body">
+                    <form id="ipsectionform" class="form-search" method="POST"  enctype="multipart/form-data" name="form">
+                          {% csrf_token %}
+                          <table>
+                             <tbody>
+                                  <tr>
+                                     <th><label for="id_name">IP段:</label></th>
+                                     <td>{{ form.name }}</td>
+                                     <td class="name auth errorInfo fa fa-star"></td>
+                                  </tr>
+                                  <tr>
+                                       <th><label for="id_idc">机房:</label></th>
+                                       <td>{{ form.idc }}</td>
+                                       <td class="idc errorInfo"></td>
+                                   </tr>
+                                  <tr>
+                                     <th><label for="id_remark">备注:</label></th>
+                                     <td>{{ form.remark }}</td>
+                                     <td class="remark errorInfo fa fa-star"></td>
+                                  </tr>
+                            </tbody>
+                          </table><br>
+                          <a class="btn btn-primary" href="javascript:history.go(-1);">返回</a>
+                          <input type="submit" class="btn btn-warning" value="保存" id="Save" >
+                          <span class="errorInfo" style="color:red;margin-right:150px;"></span>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <h3 class="panel-title">IP段使用情况</h3>
+                    </div>
+                    <div class="panel-body">
+
+                    </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

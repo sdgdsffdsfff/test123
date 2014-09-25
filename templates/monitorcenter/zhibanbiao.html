@@ -1,0 +1,45 @@
+{% extends 'monitorcenter/base.html' %}
+{% block page %}
+    <style>
+        .col-md-4 img{border:none;width: 100%;height:280px;}
+    </style>
+    <div class="row" id="iframe">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                  <div class="panel-heading" style="padding:15px">2014年 {{ mid }}月值班表</div>
+                  <div class="panel-body" style="padding: 15px">
+                      {{ zhiban | safe }}
+                  </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                  <div class="panel-heading" style="padding:15px">网站运营部联系方式 值班电话 13911436550</div>
+                  <div class="panel-body" style="padding: 15px">
+                      <table border="0" cellpadding="0" cellspacing="0" class="table table-bordered table-striped">
+                          <tbody>
+                              <tr>
+                                <td>周秋野 18910943200</td><td> 童 钢 13581717949 </td><td>崔 铮 18600040237 </td><td>程道晓 13911651901</td><td> 刘子凡 15210000310</td>
+                              </tr>
+                              <tr>
+                                <td>张 鹏 18610371513 </td><td>张 勇 13521399064 </td><td>高 明 13466731280</td><td>孙 岩 13501364884</td><td>张盼 13466790353</td>
+                              </tr>
+                              <tr>
+                                <td>刘 伟 13811519818 </td><td>王 雄 15810162407 </td><td>占江南 15810635960 </td><td> 郭建芳 18211011799 </td><td>王 晨 13581840776</td>
+                              </tr>
+                              <tr>
+                                <td>商玉刚 15801163372 </td><td>孟凡伟 13718043001 </td><td>于庆龙 13811136768 </td><td> </td><td>李 威 13691017456</td>
+                              </tr>
+                              <tr>
+                                <td>周俊峰 13260028364 </td><td>黄 亮 13439732467 </td><td>杨许刚 13240460634</td><td>  郭灵通 18610023583 </td><td>李 冉 13426002083</td>
+                              </tr>
+                              <tr>
+                                <td>夏金鑫 18601111241 </td><td>邱墨桐 13810066408 </td><td>郭灵通 18610028583 </td><td>李永安 13681530467 </td><td>谷 宁 15101532558</td>
+                              </tr>
+                          </tbody>
+                      </table>
+                  </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

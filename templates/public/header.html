@@ -1,0 +1,29 @@
+<header class="container navbar-fixed-top" role="banner">
+    <a href="/" class="navbar-brand"><img src="/static/bootstrap/img/logo_test.png" ></a>
+    <ul class="nav navbar-nav">
+          <li class="home"><a href="{% url "profile" %}">主页</a></li>
+          {% if perms.monitorcenter.add_cactihost %}
+              <li class="monitor"><a href="{% url "monitorindex" %}">监控中心</a></li>
+          {% endif %}
+          {% if perms.networkcenter.add_device %}
+            <li class="network"><a href="{% url "networkindex" %}">网络中心</a></li>
+          {% endif %}
+          {% if perms.systemcenter.add_serverpool %}
+            <li class="system"><a href="{% url "systemindex" %}">系统中心</a></li>
+          {% endif %}
+{#          <li><a href="#">DB 中心</a></li>#}
+{#          <li><a href="#">报表系统</a></li>#}
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+        <li>
+            <a href="{% url "profile" %}" class="btn btn-xs">欢迎～
+                <span class="glyphicon glyphicon-user"></span> {{ user.first_name }}
+            </a>
+        </li>
+        <li>
+            <a href="{%url "logout"%}" class="btn btn-xs">
+                <span class="glyphicon glyphicon-off"></span> 退出
+            </a>
+        </li>
+    </ul>
+</header>

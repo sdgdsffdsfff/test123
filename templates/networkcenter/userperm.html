@@ -1,0 +1,53 @@
+{% extends 'networkcenter/base.html' %}
+{% block content %}
+    <script type="text/javascript">
+        $(function () {
+            var options = {
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if (data.code == 1){
+                        $('#addidc').fadeOut();
+                        alertify.alert("添加成功");
+                        $('#alertify-ok').live("click",function(){
+                            window.location=document.referrer;
+                        });
+                    }else if (data.code == 0){
+                        $(".name").text(data.message['name']);
+                        $(".auth").text(data.message['auth']);
+                    }
+                }
+            };
+            // ajaxForm
+            $("#adduserperm").ajaxForm(options);
+        });
+    </script>
+    <div class="navbar">
+        <div class="navbar-inner">
+            <label><i class="fa fa-tachometer fa-2x"></i>
+                <ol class="breadcrumb" style="display: inline-block;padding: 1px;margin-bottom:0px;background-color:transparent">
+                  <li><a href="#">{{ obj_name }}</a></li>
+                  <li><a href="#">{{ obj }}</a></li>
+                  <li class="active">权限管理</li>
+                </ol>
+            </label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+              <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <label style="font-size: 15px;color: #0066CC;margin-top:3px;margin-bottom: 0;">
+                            <span class="glyphicon glyphicon-info-sign"></span> {{ obj }}
+                        </label>
+                    </div>
+                    <div class="panel-body">
+                        <form id="adduserperm" class="form-search" method="POST"  enctype="multipart/form-data" name="form"> {% csrf_token %}
+                            {{ form.as_table }}
+                          <input type="submit" class="btn btn-warning" value="保存">
+                          <span class="errorInfo name auth" style="color:red;margin-right:300px"></span>
+                      </form>
+                    </div>
+              </div>
+        </div>
+    </div>
+{% endblock %}

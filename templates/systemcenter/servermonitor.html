@@ -1,0 +1,50 @@
+{% extends 'public/base.html' %}
+{% block page %}
+{% load guardian_tags %}
+    <style>
+        body{
+            padding: 0;
+        }
+    </style>
+    <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <a type="button" class="close" href="javascript:window.close()">&times;</a>
+            <h4 class="modal-title" id="myModalLabel"><i class="fa fa-bar-chart-o"></i> {{ srv.hostname }} 监控列表</h4>
+          </div>
+          <div class="modal-body">
+              {% for id in graph_id_list %}
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                    </div>
+                    <div class="panel-body" style="padding: 0">
+                        <a href="{{ cacti.host }}/graph.php?action=view&rra_id=all&local_graph_id={{ id.graph_id }}" onclick="return showAddAnotherPopup(this);" target='_blank'>
+                        <img src="{{ cacti.host }}/graph_image.php?action=view&local_graph_id={{ id.graph_id }}&rra_id=1" style="width: 556px;"/></a>
+                    </div>
+                </div>
+            {% endfor %}
+          </div>
+          <div class="modal-footer">
+              <a class="btn btn-primary-outline" href="javascript:window.close();" style="margin-left:400px">返回</a>
+              <input type="submit" class="btn btn-primary-outline" value="保存" >
+          </div>
+        </div><!-- /.modal-content -->
+     </div><!-- /.modal-dialog -->
+    <script src="/static/bootstrap/js/jquery.form.js"></script>
+    <script src="/static/bootstrap/js/jquery-ui.min.js"></script>
+    <script src="/static/bootstrap/js/jquery-ui-timepicker-addon.js"></script>
+    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/static/bootstrap/js/bootstrap-tooltip.js"></script>
+    <script src="/static/bootstrap/js/bootstrap-popover.js"></script>
+    <script src="/static/bootstrap/js/alertify.js"></script>
+    <script src="/static/bootstrap/js/jquery.cookie.js"></script>
+    <script src="/static/bootstrap/js/RelatedObjectLookups.js"></script>
+    <script src="/static/bootstrap/js/raphael.js"></script>
+    <script src="/static/bootstrap/js/chinamapPath.js"></script>
+    <script src="/static/bootstrap/js/jquery-jvectormap-1.2.2.min.js"></script>
+    <script src="/static/bootstrap/js/jquery-jvectormap-cn-merc-cn.js"></script>
+    <script src="/static/bootstrap/js/highcharts.js"></script>
+    <script src="/static/bootstrap/js/jquery.easyui.min.js"></script>
+    <script src="/static/bootstrap/js/jquery.dataTables.min.js"></script>
+    <script src="/static/bootstrap/js/assets/device.js"></script>
+{% endblock %}

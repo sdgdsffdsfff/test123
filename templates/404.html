@@ -1,0 +1,45 @@
+{% extends 'public/base.html' %}
+{% block header %}
+    {% include "public/header.html" %}
+    <style>
+        .col-md-10 .navbar{
+            margin-bottom: 5px;
+            color: #0066CC;
+            border-bottom: 1px solid #dddddd;
+            min-height: 35px;
+        }
+        .navbar-inner {
+            margin-left: 2px;
+            padding-top: 5px;
+        }
+        .navbar-inner .btn-sm{
+            padding-top: 8px;
+        }
+        .panel-body .nav > li > a {
+            padding: 5px 20px;
+        }
+        .panel-title > a {
+            color: #0066CC;
+        }
+        .errorInfo {
+            color: #ff0000;
+        }
+        .pager li > a, .pager li > span {
+            display: inline-block;
+            padding: 6px 14px;
+        }
+        .badge {
+            background-color: #339933;
+        }
+    </style>
+{% endblock %}
+{% block page %}
+    <div class="row" style="margin-top: 5px">
+        <div style="padding-left: 250px">
+            <img src="/static/bootstrap/img/404.jpg">
+        </div>
+    </div>
+{% endblock %}
+{% block footer %}
+    {% include "public/footer.html" %}
+{% endblock %}

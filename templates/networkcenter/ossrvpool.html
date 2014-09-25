@@ -1,0 +1,160 @@
+{% extends 'networkcenter/base.html' %}
+{% block widget %}
+    <div class="panel panel-default" style="margin-bottom: 10px;">
+          <div class="panel-heading">
+              <i class="fa fa-globe"></i>
+              <label> 装机平台</label>
+          </div>
+          <div class="panel-body">
+              <ul class="nav nav-pills nav-stacked">
+                  <li><a  href="{% url "srvpool" %}"><i class="fa fa-bars"></i> 资源池</a></li>
+                  {% if perms.networkcenter.add_osinstallqueue %}
+                      <li><a data-toggle="modal" data-target="#adddevice"><i class="fa fa-plus-square-o"></i> 添加装机</a></li>
+                  {% endif %}
+                  <li><a href="{% url "osinstall" %}"><i class="fa fa-toggle-right"></i> 装机队列</a></li>
+                  <li><a href="{% url "osinstallcomplete" %}"><i class="fa fa-sun-o"></i> 装机完毕</a></li>
+                  <li><a href="#"><i class="fa fa-file-o"></i> 历史记录</a></li>
+              </ul>
+          </div>
+    </div>
+    <div id="adddevice" class="modal" style="display:none">
+        <form id="osinstall" method="POST"  enctype="multipart/form-data" role="form" action="{% url "osinstall" %}"> {% csrf_token %}
+            <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" >&times;</button>
+                    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-save"></i> 添加装机任务</h4>
+                  </div>
+                  <div class="modal-body">
+                    <blockquote><i class="fa fa-meh-o"></i> 按行输入要装机的SN号，生成装机列表。</blockquote>
+                    <table class="table-responsive">
+                        <tbody>
+                            <tr><th></th>
+                                <td>{{ form.sn }}</td>
+                                <td class="errorInfo device_sn fa fa-star"></td>
+                            </tr>
+                            <tr><th><label for="id_description">用途:</label></th>
+                                <td>{{ form.description }}</td>
+                                <td class="errorInfo description fa fa-star"></td>
+                            </tr>
+                            <tr><th><label for="id_needs_user">申请人:</label></th>
+                                <td>{{ form.needs_user }}</td>
+                                <td class="errorInfo needs_user fa fa-star"></td>
+                            </tr>
+                            <tr><th><label for="id_tp_type">模板:</label></th>
+                                <td>
+                                    {% for radio in form.tp_type %}
+                                        <label class="radio-inline">
+                                            {{ radio.tag }}
+                                            <span>{{ radio.choice_label }}</span>
+                                        </label>
+                                    {% endfor %}
+                                </td>
+                                <td class="idc"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                  </div>
+                  <div class="modal-footer">
+                      <span class="all errorInfo" style="margin-right:300px"></span>
+                      <input type="submit" class="btn btn-primary-outline" value="添加" style="margin-left:400px">
+                      <button type="button" class="btn btn-primary-outline" data-dismiss="modal">Close</button>
+                  </div>
+                </div><!-- /.modal-content -->
+             </div><!-- /.modal-dialog -->
+        </form>
+    </div>
+    <script type="text/javascript">
+        $(function () {
+            $('.close').click(function(){
+                 location.reload();
+             });
+            var datatables=$('#xx').dataTable({
+                "sPaginationType": "full_numbers"
+            });
+            var options = {
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if (data.code == 1){
+                        $('#adddevice').modal('hide');
+                        if (data.message['unavailable_device'] != ""){
+                            $('.alert-yes > p').html('执行成功<p>' + data.message['unavailable_device'] + '已分配,请检测</p>');
+                        }else{
+                            $('.alert-yes > p').html('执行成功<p>' + data.message['unavailable_device']+ '</p>');
+                        }
+                        $('.alert-yes').show();
+                    }else if (data.code == 0){
+                        $(".device_sn").text(data.message['sn']);
+                        $(".needs_user").text(data.message['needs_user']);
+                        $(".rack").text(data.message['rack']);
+                        $(".description").text(data.message['description']);
+                    }
+                }
+            };
+            // ajaxForm
+            $("#osinstall").ajaxForm(options);
+            $("#addosinstall").click(function(){
+                $("#id_sn").text(function(v){
+                    var sn = "";
+                    $.each($(".action-select:checked"), function(i,n){
+                        sn += $(n).val()+"\r\n";
+                    });
+                    return sn;
+                });
+            });
+        });
+    </script>
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title" style="display: inline-block"><i class="fa fa-laptop"></i> 资源池</h3>
+                    <div class="btn-group pull-right">
+                        <a class="btn btn-primary-outline" id="addosinstall" data-toggle="modal" data-target="#adddevice">添加装机</a>
+                    </div>
+                </div>
+                <div class="panel-body" style="padding: 5px">
+                    <div class="alert alert-success alert-yes" style="display: none">
+                          <button class="close" type="button">×</button><p></p>
+                    </div>
+                    <table class="table table-hover table-bordered" id="xx">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th>序列号</th>
+                            <th>机 房</th>
+                            <th>机 柜</th>
+                            <th>U 位</th>
+                            <th>状 态</th>
+                            <th>操 作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for idc in idcs %}
+                            <tr>
+                                <td class="action-checkbox"><input class="action-select" name="_selected_action" type="checkbox" value="{{ idc.sn }}"></td>
+                                <td>{{ idc.sn }}</td>
+                                <td>{{ idc.idc.name }}</td>
+                                <td>{{ idc.rack.name }}</td>
+                                <td>{{ idc.position.name }}</td>
+                                <td>{% if idc.status  %}
+                                        <span class="label label-success">已分配</span>
+                                    {% else %}
+                                        <span class="label label-danger">未分配</span>
+                                    {% endif %}
+                                </td>
+                                <td><a href="{% url "devicedetail" idc.id %}"  onclick="return showAddAnotherPopup(this);" data-toggle="tooltip" title="设备详情"><i class="fa fa-eye"></i></a>
+                                    <a href="{% url "deviceedit" idc.id %}"  onclick="return showAddAnotherPopup(this);" data-toggle="tooltip" title="设备编辑"><i class="fa fa-edit"></i></a>
+                                    <a href="{% url "deviceint" idc.id %}"  onclick="return showAddAnotherPopup(this);" data-toggle="tooltip" title="设备接口"><i class="fa fa-sitemap"></i></a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

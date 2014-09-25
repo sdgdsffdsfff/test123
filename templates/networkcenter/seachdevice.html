@@ -1,0 +1,313 @@
+{% extends 'networkcenter/base.html' %}
+{% block page %}
+    <style>
+        .col-md-10 .navbar{
+            margin-bottom: 5px;
+            color: #0066CC;
+            border-bottom: 1px solid #dddddd;
+            min-height: 35px;
+        }
+        .navbar-inner {
+            margin-left: 2px;
+            padding-top: 5px;
+        }
+        .navbar-inner .btn-sm{
+            padding-top: 8px;
+        }
+        .panel-body .nav > li > a {
+            padding: 5px 20px;
+        }
+        .panel-title > a {
+            color: #0066CC;
+        }
+        .errorInfo {
+            color: #ff0000;
+        }
+        .pager li > a, .pager li > span {
+            display: inline-block;
+            padding: 6px 14px;
+        }
+        .badge {
+            background-color: #339933;
+        }
+        .seclist .alist{
+            display: inline-block;
+            _width: 40px;
+            padding: 7px 0px 0px;
+        }
+        .seclist .list{
+            display: inline-block;_width: 40px;
+            padding: 7px 0px 0px;
+            font-size: 15px;
+        }
+        .seclist .list a{
+            color: #336699;
+            margin-right: 5px;
+        }
+        .seclist .list a:hover, .seclist .list a:focus{
+            color: #f37c06;
+        }
+        .seclist .alist a{
+            margin-right: 5px;
+            line-height: 19px;
+            border: 1px solid #ddd;
+        }
+        .seclist .alist a em{
+            color: #f37c06;
+            background: #fff;
+        }
+        a:link,a:visited{text-decoration:none;}
+    </style>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="navbar " style="margin-bottom: 0">
+                <div class="input-group" style="float: right;margin-bottom:10px;margin-right:20%">
+                      <img src="/static/bootstrap/img/search.jpg">
+                      <input type="text" class="form-control search" placeholder="" value="{{ search_var }}" style="width: 450px;">
+                      <span class="input-group-btn" style="width: 0px">
+                        <button class="btn btn-default" id="search" type="button">
+                            <span class="glyphicon glyphicon-search"></span> 搜一下
+                        </button>
+                      </span>找到相关结果约 <span class="badge">{{ idcs | length }}</span>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="seclist" style="margin-bottom: 5px">
+                        <span class="pathattr">已选：</span>
+                        <div class="alist">
+                            {% if idc %}
+                                <a href="/network/device-0-{{ dt.id | default:"0" }}-{{ db.id | default:"0" }}-{{ dm.id | default:"0" }}-{{ sp.id | default:"0" }}.html?s={{ search_var }}">
+                                    <em>机房:{{ idc }} <span class="glyphicon glyphicon-remove" style="color: #ff0000"></span></em>
+                                </a>
+                            {% endif %}
+                            {% if dt %}
+                                <a href="/network/device-{{ idc.id | default:"0" }}-0-{{ db.id | default:"0" }}-{{ dm.id | default:"0" }}-{{ sp.id | default:"0" }}.html?s={{ search_var }}">
+                                    <em>类型:{{ dt }} <span class="glyphicon glyphicon-remove" style="color: #ff0000"></span></em>
+                                </a>
+                            {% endif %}
+                            {% if db %}
+                                <a href="/network/device-{{ idc.id | default:"0" }}-{{ dt.id | default:"0" }}-0-{{ dm.id | default:"0" }}-{{ sp.id | default:"0" }}.html?s={{ search_var }}">
+                                    <em>品牌:{{ db }} <span class="glyphicon glyphicon-remove" style="color: #ff0000"></span></em>
+                                </a>
+                            {% endif %}
+                            {% if dm %}
+                                <a href="/network/device-{{ idc.id | default:"0" }}-{{ dt.id | default:"0" }}-{{ db.id | default:"0" }}-0-{{ sp.id | default:"0" }}.html?s={{ search_var }}">
+                                    <em>型号:{{ dm }} <span class="glyphicon glyphicon-remove" style="color: #ff0000"></span></em>
+                                </a>
+                            {% endif %}
+                            {% if sp %}
+                                <a href="/network/device-{{ idc.id | default:"0" }}-{{ dt.id | default:"0" }}-{{ db.id | default:"0" }}-{{ dm.id | default:"0" }}-0.html?s={{ search_var }}">
+                                    <em>供货商:{{ sp }} <span class="glyphicon glyphicon-remove" style="color: #ff0000"></span></em>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="seclist">
+                        {% if not idc %}
+                            <span>机房：</span>
+                            <div class="list">
+                                {% for idc in deviceidc %}
+                                    <a href="/network/device-{{ idc.id }}-{{ dt.id | default:"0" }}-{{ db.id | default:"0" }}-{{ dm.id | default:"0" }}-{{ sp.id | default:"0" }}.html?s={{ search_var }}">
+                                        <em>{{ idc.name }}</em>({{ idc.device_set.all.count }})
+                                    </a>
+                                {% endfor %}
+                            </div><br>
+                        {% endif %}
+                        {% if not dt %}
+                            <span class="pathattr">类型：</span>
+                            <div class="list">
+                                {% for dt in devicetype %}
+                                    <a href="/network/device-{{ idc.id | default:"0" }}-{{ dt.id | default:"0" }}-{{ db.id | default:"0" }}-{{ dm.id | default:"0" }}-{{ sp.id | default:"0" }}.html?s={{ search_var }}">
+                                        <em>{{ dt.name }}</em>({{ dt.device_set.all.count }})
+                                    </a>
+                                {% endfor %}
+                            </div><br>
+                        {% endif %}
+                        {% if not db %}
+                            <span class="pathattr">品牌：</span>
+                            <div class="list">
+                                {% for db in devicebrands %}
+                                    <a href="/network/device-{{ idc.id | default:"0"  }}-{{ dt.id | default:"0" }}-{{ db.id | default:"0" }}-{{ dm.id | default:"0" }}-{{ sp.id | default:"0" }}.html?s={{ search_var }}">
+                                        <em>{{ db.name }}</em>({{ db.device_set.all.count }})
+                                    </a>
+                                {% endfor %}
+                            </div><br>
+                        {% endif %}
+                        {% if not dm %}
+                            <span class="pathattr">型号：</span>
+                            <div class="list">
+                                {% for dm in devicemodel %}
+                                    <a href="/network/device-{{ idc.id | default:"0"  }}-{{ dt.id | default:"0" }}-{{ db.id | default:"0" }}-{{ dm.id | default:"0" }}-{{ sp.id | default:"0" }}.html?s={{ search_var }}">
+                                        <em>{{ dm.name }}</em>({{ dm.device_set.all.count }})
+                                    </a>
+                                {% endfor %}
+                            </div><br>
+                        {% endif %}
+                        {% if not sp %}
+                            <span class="pathattr">供货商：</span>
+                            <div class="list">
+                                {% for sp in devicesp %}
+                                    <a href="/network/device-{{ idc.id | default:"0"  }}-{{ dt.id | default:"0" }}-{{ db.id | default:"0" }}-{{ dm.id | default:"0" }}-{{ sp.id | default:"0" }}.html?s={{ search_var }}">
+                                        <em>{{ sp.name }}</em>({{ sp.device_set.all.count }})
+                                    </a>
+                                {% endfor %}
+                            </div><br>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="panel-body" style="padding: 5px">
+                    <table class="table table-hover table-bordered" style="padding: 1px;font-size: 10px">
+                        <thead>
+                        {% if not idcs %}
+                            <tr>
+                                <td colspan="13" style="background: transparent">
+                                    <div class="alert alert-info">
+                                        <strong>亲!</strong> 虾米都木有找到,请进行人品测试,谢谢~.
+                                    </div>
+                                    <div style="margin-left: 150px">
+                                    <embed src="/static/bootstrap/img/renpin.swf" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer"
+                                           type="application/x-shockwave-flash" width="490" height="400">
+                                    </div>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <th>类 型</th>
+                                <th>序列号</th>
+                                <th>品 牌</th>
+                                <th>型 号</th>
+                                <th>公 司</th>
+                                <th>部 门</th>
+                                <th>地 区</th>
+                                <th>机 房</th>
+                                <th>机 柜</th>
+                                <th>U 位</th>
+                                <th>供货商</th>
+                                <th>状 态</th>
+                                <th>操 作</th>
+                            </tr>
+                        {% endif %}
+                        </thead>
+                        <tbody>
+                        {% for idc in idcs %}
+                            <tr>
+                                <td><a href="{% url "devicepara" idc.device_type.id %}">{{ idc.device_type }}</a></td>
+                                <td><a href="{% url "device" idc.id %}">{{ idc.device_sn }}</a></td>
+                                <td>{{ idc.brands }}</td>
+                                <td>{{ idc.model.name }}</td>
+                                <td>{{ idc.cop }}</td>
+                                <td>{{ idc.owt }}</td>
+                                <td>{{ idc.loc }}</td>
+                                <td>{{ idc.idc }}</td>
+                                <td>{{ idc.rack }}</td>
+                                <td>{{ idc.position.name }}</td>
+                                <td>{{ idc.supplier }}</td>
+                                <td>{% if idc.status  %}
+                                        <img src="/static/admin/img/icon-yes.gif" alt="{{ idc.status }}">已分配
+                                    {% else %}
+                                        <img src="/static/admin/img/icon-no.gif" alt="{{ idc.status }}">未分配
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if perms.assets.change_device %}
+                                        <a href="{% url "deviceedit" idc.id %}" id="{{ idc.id }}"><span class="glyphicon glyphicon-edit"></span></a> |
+                                        <a href="{% url "deviceeditpara" idc.id %}"><span class="glyphicon glyphicon-cog"></span></a> |
+                                        <a href="{% url "deviceint" idc.id %}"><span class="glyphicon glyphicon-link"></span></a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <a class="btn btn-primary" style="margin-left: 94%;display: inline-block" href="{% url "devicelist" %}">返回</a>
+                    <ul class="pager">
+                        {% if search_var %}
+                          {% if idcs.has_previous %}
+                                <li> <a href="apisearchdevice?search_var={{ search_var }}&page=1">首页</a> </li>
+                                <li> <a href="apisearchdevice?search_var={{ search_var }}&page={{idcs.previous_page_number}}">前一页</a> </li>
+                            {% else %}
+                                <li> <a href="apisearchdevice?search_var={{ search_var }}&page=1">首页</a> </li>
+                          {% endif %}
+                          {% if idcs.has_next %}
+                                  <li> <a href="apisearchdevice?search_var={{ search_var }}&page={{idcs.next_page_number}}">后一页</a></li>
+                                  <li> <a href="apisearchdevice?search_var={{ search_var }}&page={{idcs.paginator.num_pages}}">尾页</a></li>
+                              {% else %}
+                                  <li> <a href="apisearchdevice?search_var={{ search_var }}&page={{idcs.paginator.num_pages}}">尾页</a></li>
+                          {% endif %}
+                          <li>
+                              第 {{ idcs.number }} 页, 共{{ idcs.paginator.num_pages }}页.&nbsp;&nbsp;&nbsp;跳到
+                          </li>
+                          <li>
+                              <div class="input-group" style="margin-top:-3px;margin-bottom: 0;display: inline-table">
+                                  <input type="text" class="form-control go_page" placeholder="1" style="width: 60px;">
+                                  <span class="input-group-btn" style="width: 0px;display:inline-table">
+                                    <button class="btn btn-default" id="go_page" type="button">Go</button>
+                                  </span>
+                              </div>
+                          </li>
+                        {% else %}
+                              {% if idcs.has_previous %}
+                                <li> <a href="/network/device-{{ idc.id | default:"0"  }}-{{ dt.id | default:"0" }}-{{ db.id | default:"0" }}-{{ dm.id | default:"0" }}-{{ sp.id | default:"0" }}.html?&page=1&s={{ search_var }}">首页</a> </li>
+                                <li> <a href="/network/device-{{ idc.id | default:"0"  }}-{{ dt.id | default:"0" }}-{{ db.id | default:"0" }}-{{ dm.id | default:"0" }}-{{ sp.id | default:"0" }}.html?&page={{idcs.previous_page_number}}&s={{ search_var }}">前一页</a> </li>
+                              {% else %}
+                                <li> <a href="/network/device-{{ idc.id | default:"0"  }}-{{ dt.id | default:"0" }}-{{ db.id | default:"0" }}-{{ dm.id | default:"0" }}-{{ sp.id | default:"0" }}.html?&page=1&s={{ search_var }}">首页</a> </li>
+                              {% endif %}
+                              {% if idcs.has_next %}
+                                      <li> <a href="/network/device-{{ idc.id | default:"0"  }}-{{ dt.id | default:"0" }}-{{ db.id | default:"0" }}-{{ dm.id | default:"0" }}-{{ sp.id | default:"0" }}.html?&page={{idcs.next_page_number}}&s={{ search_var }}">后一页</a></li>
+                                      <li> <a href="/network/device-{{ idc.id | default:"0"  }}-{{ dt.id | default:"0" }}-{{ db.id | default:"0" }}-{{ dm.id | default:"0" }}-{{ sp.id | default:"0" }}.html?&page={{idcs.paginator.num_pages}}&s={{ search_var }}">尾页</a></li>
+                                  {% else %}
+                                      <li> <a href="/network/device-{{ idc.id | default:"0"  }}-{{ dt.id | default:"0" }}-{{ db.id | default:"0" }}-{{ dm.id | default:"0" }}-{{ sp.id | default:"0" }}.html?&page={{idcs.paginator.num_pages}}&s={{ search_var }}">尾页</a></li>
+                              {% endif %}
+                              <li>
+                                  第 {{ idcs.number }} 页, 共{{ idcs.paginator.num_pages }}页.&nbsp;&nbsp;&nbsp;跳到
+                              </li>
+                              <li>
+                                  <div class="input-group" style="margin-top:-3px;margin-bottom: 0;display: inline-table">
+                                      <input type="text" class="form-control go_page" placeholder="1" style="width: 60px;">
+                                      <span class="input-group-btn" style="width: 0px;display:inline-table">
+                                        <button class="btn btn-default" id="go_page" type="button">Go</button>
+                                      </span>
+                                  </div>
+                              </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block footer %}
+    {% include "public/footer.html" %}
+    <script>
+       $(function(){
+           $('.id_year_of_purchase').datetimepicker({
+                dateFormat: "yy-mm-dd",
+                alwaysSetTime: false,
+                altFieldTimeOnly: true
+           });
+           $('#search').click(function(){
+                var search_var= $('.search').val();
+                if (search_var != ''){
+                    window.location="/network/apisearchdevice?search_var="+search_var;
+                }
+            });
+           $(".search").keydown(function(event) {
+                if (event.keyCode == 13) {
+                    var search_var= $('.search').val();
+                    if (search_var != ''){
+                        window.location="/network/apisearchdevice?search_var="+search_var;
+                    }
+                }
+           });
+           $('#go_page').click(function(){
+                var go_page = $('.go_page').val();
+                if (go_page != ''){
+                    window.location="apisearchdevice?search_var={{ search_var }}&page="+go_page;
+                }else{
+                    alertify.alert("请输入页码！");
+                }
+            });
+       });
+    </script>
+{% endblock %}

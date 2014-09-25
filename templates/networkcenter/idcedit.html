@@ -1,0 +1,71 @@
+{% extends 'networkcenter/base.html' %}
+{% block content %}
+    <script type="text/javascript">
+        $(function () {
+        var options = {
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.code == 1){
+                    $('#addidc').fadeOut();
+                    alertify.alert("修改成功");
+                    $('#alertify-ok').live("click",function(){
+                        window.location=document.referrer;
+                    });
+                }else if (data.code == 0){
+                    $(".name").text(data.message['name']);
+                    $(".address").text(data.message['address']);
+                    $(".mail").text(data.message['mail']);
+                    $(".auth").text(data.message['auth']);
+                }
+            }
+        };
+        // ajaxForm
+        $("#idcform").ajaxForm(options);
+        });
+    </script>
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <label><i class="fa fa-tachometer fa-2x"></i>IDC机房编辑</label>
+            </div>
+            <div class="panel-body">
+                  <form id="idcform" class="form-search" method="POST"  enctype="multipart/form-data" name="form"> {% csrf_token %}
+                      <table>
+                         <tbody>
+                            <tr>
+                                <th><label for="id_name">机房名:</label></th>
+                                <td>{{ form.name }}</td>
+                                <td class="name auth errorInfo fa fa-star"></td>
+                            </tr>
+                            <tr>
+                                <th><label for="id_address">地址:</label></th>
+                                <td>{{ form.address }}</td>
+                            </tr>
+                            <tr>
+                                <th><label for="id_phone">电话:</label></th>
+                                <td>{{ form.phone }}</td>
+                            <tr>
+                                <th><label for="id_mail">邮箱:</label></th>
+                                <td>{{ form.mail }}</td>
+                                <td class="mail errorInfo"></td>
+                            </tr>
+                            <tr>
+                                <th><label for="id_tag">标签:</label></th>
+                                <td>{{ form.tag }}</td>
+                            </tr>
+                            <tr>
+                                <th><label for="id_remark">备注:</label></th>
+                                <td>{{ form.remark }}</td>
+                            </tr>
+                         </tbody>
+                      </table><br>
+                      <a class="btn btn-default" href="javascript:history.go(-1);" >返回</a>
+                      <input type="submit" class="btn btn-warning" value="保存" id="Save" >
+                  </form>
+            </div>
+{#            <div class="col-md-6">#}
+{#                <iframe width="455" height="340" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="http://j.map.baidu.com/WB2Mo"></iframe>#}
+{#            </div>#}
+        </div>
+    </div>
+{% endblock %}
